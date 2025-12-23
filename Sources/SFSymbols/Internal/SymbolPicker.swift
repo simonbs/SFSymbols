@@ -14,10 +14,10 @@ struct SymbolPicker: View {
         !safeSearchText.isEmpty
     }
     private var enabledCategories: [SFSymbolCategory] {
-        symbols.categories.filter {
-            $0.key != "whatsnew"
-            && $0.key != "variable"
-            && $0.key != "multicolor"
+        symbols.categories.filter { category in
+            category.key != "whatsnew"
+            && category.key != "variable"
+            && category.key != "multicolor"
         }
     }
     private var currentSymbols: [SFSymbol] {

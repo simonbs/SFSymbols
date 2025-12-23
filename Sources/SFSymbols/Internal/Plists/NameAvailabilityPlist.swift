@@ -49,14 +49,6 @@ struct NameAvailabilityPlist: Decodable {
     }
 
     struct Platforms: Decodable {
-        enum CodingKeys: String, CodingKey {
-            case macOS = "macOS"
-            case tvOS = "tvOS"
-            case watchOS = "watchOS"
-            case iOS = "iOS"
-            case visionOS = "visionOS"
-        }
-
         let macOS: SemanticVersion
         let tvOS: SemanticVersion
         let watchOS: SemanticVersion
@@ -94,7 +86,7 @@ struct NameAvailabilityPlist: Decodable {
         init(from decoder: any Decoder) throws {
             let container = try decoder.singleValueContainer()
             let stringValue = try container.decode(String.self)
-            guard let decodedValue = SymbolsVersion(rawValue: stringValue) else {
+            guard let decodedValue = Self(rawValue: stringValue) else {
                 throw DecodingError.dataCorruptedError(
                     in: container,
                     debugDescription: "Unexpected calendar release '\(stringValue)'"
@@ -144,7 +136,7 @@ struct NameAvailabilityPlist: Decodable {
         init(from decoder: any Decoder) throws {
             let container = try decoder.singleValueContainer()
             let stringValue = try container.decode(String.self)
-            guard let decodedValue = SemanticVersion(rawValue: stringValue) else {
+            guard let decodedValue = Self(rawValue: stringValue) else {
                 throw DecodingError.dataCorruptedError(
                     in: container,
                     debugDescription: "Unexpected semantic version '\(stringValue)'"
@@ -163,12 +155,10 @@ struct NameAvailabilityPlist: Decodable {
                 self.major = major
                 self.minor = minor
                 self.patch = nil
-            } else if
-                components.count == 3,
-                let major = Int(components[0]),
-                let minor = Int(components[1]),
-                let patch = Int(components[2])
-            {
+            } else if components.count == 3,
+                      let major = Int(components[0]),
+                      let minor = Int(components[1]),
+                      let patch = Int(components[2]) {
                 self.major = major
                 self.minor = minor
                 self.patch = patch

@@ -71,13 +71,13 @@ struct CategoryFilterPicker: View {
     }
 }
 
-private nonisolated struct CategoryFilterItemBoundsKey: PreferenceKey {
+nonisolated private struct CategoryFilterItemBoundsKey: PreferenceKey {
     nonisolated(unsafe) static let defaultValue: [CategoryFilter: Anchor<CGRect>] = [:]
 
     static func reduce(
         value: inout [CategoryFilter: Anchor<CGRect>],
         nextValue: () -> [CategoryFilter: Anchor<CGRect>]
     ) {
-        value.merge(nextValue(), uniquingKeysWith: { $1 })
+        value.merge(nextValue()) { $1 }
     }
 }

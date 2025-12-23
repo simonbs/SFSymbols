@@ -1,6 +1,6 @@
 import Foundation
 
-struct CoreGlyphsPlistFileReader {
+enum CoreGlyphsPlistFileReader {
     enum ReadError: LocalizedError, CustomDebugStringConvertible {
         case propertyListNotFound
         case failedReadingFile
