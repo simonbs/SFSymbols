@@ -23,7 +23,7 @@ Add SFSymbols to your Xcode project or Swift package.
 ```swift
 let package = Package(
     dependencies: [
-        .package(url: "https://github.com/simonbs/SFSymbols.git", branch: "main")
+        .package(url: "https://github.com/simonbs/SFSymbols.git", from: "1.0.0")
     ]
 )
 ```
