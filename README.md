@@ -1,20 +1,16 @@
 # SFSymbols
 
 <div align="center">
-<h4>SFSymbols gives you a ready-to-use symbol picker for SwiftUI and an async API for reading the system SF Symbols catalog.</h4>
+  <img src="recording.gif" width="300" />
+  <h4>SFSymbols gives you a ready-to-use symbol picker for SwiftUI and an API for reading the SF Symbols catalog. Use it to let users pick symbols in-app, or to build your own symbol browsing UI.</h4>
 </div>
 
-- [Introduction](#introduction)
 - [Getting Started](#getting-started)
   - [Step 1: Add the SFSymbols Swift Package](#step-1-add-the-sfsymbols-swift-package)
   - [Step 2: Use SFSymbolPicker](#step-2-use-sfsymbolpicker)
   - [Step 3: Present the Picker With .sfSymbolPicker](#step-3-present-the-picker-with-sfsymbolpicker)
   - [Step 4: Load and Browse Symbols With SFSymbols](#step-4-load-and-browse-symbols-with-sfsymbols)
 - [Example Project](#example-project)
-
-## Introduction
-
-SFSymbols gives you a ready-to-use symbol picker for SwiftUI and an async API for reading the system SF Symbols catalog. Use it to let users pick symbols in-app, or to build your own symbol browsing UI.
 
 ## Getting Started
 
