@@ -6,17 +6,17 @@
 </div>
 
 - [Getting Started](#getting-started)
-  - [Step 1: Add the SFSymbols Swift Package](#step-1-add-the-sfsymbols-swift-package)
-  - [Step 2: Use SFSymbolPicker](#step-2-use-sfsymbolpicker)
-  - [Step 3: Present the Picker With .sfSymbolPicker](#step-3-present-the-picker-with-sfsymbolpicker)
-  - [Step 4: Load and Browse Symbols With SFSymbols](#step-4-load-and-browse-symbols-with-sfsymbols)
+  - [Add the SFSymbols Swift Package](#add-the-sfsymbols-swift-package)
+  - [Use SFSymbolPicker](#use-sfsymbolpicker)
+  - [Present the Picker With .sfSymbolPicker](#present-the-picker-with-sfsymbolpicker)
+  - [Load and Browse Symbols With SFSymbols](#load-and-browse-symbols-with-sfsymbols)
 - [Example Project](#example-project)
 
 ## Getting Started
 
 This section walks through adding SFSymbols and using the three primary APIs.
 
-### Step 1: Add the SFSymbols Swift Package
+### Add the SFSymbols Swift Package
 
 Add SFSymbols to your Xcode project or Swift package.
 
@@ -28,7 +28,7 @@ let package = Package(
 )
 ```
 
-### Step 2: Use SFSymbolPicker
+### Use SFSymbolPicker
 
 `SFSymbolPicker` is a SwiftUI view that presents a labeled row with a button showing the current symbol.
 
@@ -49,7 +49,7 @@ struct ContentView: View {
 
 `SFSymbolPicker` accepts both optional and non-optional bindings. Optional bindings let you clear the selection.
 
-### Step 3: Present the Picker With .sfSymbolPicker(...)
+### Present the Picker With .sfSymbolPicker(...)
 
 Use the view modifier when you want full control over the button or the presentation trigger.
 
@@ -74,7 +74,7 @@ struct ContentView: View {
 
 `.sfSymbolPicker` can be attached to any view, including images, list rows, or custom buttons.
 
-### Step 4: Load and Browse Symbols With SFSymbols
+### Load and Browse Symbols With SFSymbols
 
 `SFSymbols` loads the system catalog asynchronously. Use it to build custom filters, category views, or search.
 
