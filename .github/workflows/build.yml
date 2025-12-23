@@ -10,7 +10,7 @@ concurrency:
 jobs:
   build:
     name: Build and Test (Xcode ${{ matrix.xcode }})
-    runs-on: macos-14
+    runs-on: macos-26
     continue-on-error: true
     strategy:
       matrix:
@@ -18,12 +18,6 @@ jobs:
           - xcode: 26.2
             destination: iPhone 17 Pro
             os: 26.2
-          - xcode: 16.2
-            destination: iPhone 16 Pro
-            os: 18.2
-          - xcode: 15.2
-            destination: iPhone 15 Pro
-            os: 17.2
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer    
     steps:
