@@ -43,13 +43,13 @@ public struct SFSymbolPicker: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .sfSymbolPicker(
-                isPresented: $isPresented,
-                selection: $selection
-            )
         } label: {
             Text(titleResource)
         }
+        .sfSymbolPicker(
+            isPresented: $isPresented,
+            selection: $selection
+        )
     }
 }
 

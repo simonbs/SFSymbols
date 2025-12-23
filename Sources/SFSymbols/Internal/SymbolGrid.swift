@@ -59,24 +59,41 @@ private extension SymbolGrid {
         let systemName: String
         let isSelected: Bool
 
+        @Environment(\.colorScheme) private var colorScheme
         @Environment(\.displayScale) private var displayScale
+        private var cornerRadius: CGFloat {
+            round(12 * scale)
+        }
+        private var backgroundStyle: some ShapeStyle {
+            switch colorScheme {
+            case .light:
+                AnyShapeStyle(.background)
+            case .dark:
+                AnyShapeStyle(.background.secondary)
+            @unknown default:
+                AnyShapeStyle(.background.secondary)
+            }
+        }
+        private var strokeStyle: some ShapeStyle {
+            isSelected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.separator)
+        }
+        private var strokeWidth: CGFloat {
+            isSelected ? 2 : 1 / displayScale
+        }
 
         var body: some View {
-            ZStack {
-                RoundedRectangle(cornerRadius: round(12 * scale), style: .continuous)
-                    .foregroundStyle(.background.secondary)
-                Image(systemName: systemName)
-                    .font(.system(size: 18 * scale, weight: .regular))
-                    .symbolRenderingMode(.monochrome)
-                    .foregroundStyle(.primary)
-                if isSelected {
-                    RoundedRectangle(cornerRadius: round(12 * scale), style: .continuous)
-                        .stroke(Color.accentColor, lineWidth: 2)
-                } else {
-                    RoundedRectangle(cornerRadius: round(12 * scale), style: .continuous)
-                        .stroke(.separator, lineWidth: 1 / displayScale)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(backgroundStyle)
+                .overlay {
+                    Image(systemName: systemName)
+                        .font(.system(size: 18 * scale, weight: .regular))
+                        .symbolRenderingMode(.monochrome)
+                        .foregroundStyle(.primary)
                 }
-            }
+                .overlay {
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .stroke(strokeStyle, lineWidth: strokeWidth)
+                }
         }
     }
 }

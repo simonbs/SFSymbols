@@ -13,7 +13,7 @@ public struct ModalSFSymbolPicker: View {
 
     public var body: some View {
         NavigationStack {
-            ZStack {
+            Group {
                 if isLoading {
                     ContentUnavailableView {
                         ZStack {
@@ -27,19 +27,17 @@ public struct ModalSFSymbolPicker: View {
                         Text("Loading...")
                             .padding(.top)
                     }
-                    .background(.background.secondary)
                 } else if let loadError {
                     ContentUnavailableView(
                         "Could not load symbols",
                         systemImage: "exclamationmark.triangle.fill",
                         description: Text(loadError.localizedDescription)
                     )
-                    .background(.background.secondary)
                 } else if let symbols {
                     SymbolPicker(selection: $selection, symbols: symbols)
-                        .background(.background.secondary)
                 }
             }
+            .background(BackgroundView())
             .navigationTitle("Symbols")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -62,26 +60,35 @@ public struct ModalSFSymbolPicker: View {
             }
         }
         .task {
-            loadSymbols()
+            do {
+                symbols = try await SFSymbols()
+                isLoading = false
+            } catch {
+                loadError = error
+                isLoading = false
+            }
         }
     }
 }
 
 private extension ModalSFSymbolPicker {
-    private func loadSymbols() {
-        Task.detached(name: "Load SFSymbols", priority: .userInitiated) {
-            do {
-                let symbols = try await SFSymbols()
-                await MainActor.run {
-                    self.symbols = symbols
-                    self.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.loadError = error
-                    self.isLoading = false
-                }
+    struct BackgroundView: View {
+        @Environment(\.colorScheme) private var colorScheme
+        private var backgroundStyle: some ShapeStyle {
+            switch colorScheme {
+            case .light:
+                AnyShapeStyle(.background.secondary)
+            case .dark:
+                AnyShapeStyle(.background)
+            @unknown default:
+                AnyShapeStyle(.background.secondary)
             }
+        }
+
+        var body: some View {
+            Rectangle()
+                .fill(backgroundStyle)
+                .ignoresSafeArea()
         }
     }
 }
