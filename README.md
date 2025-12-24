@@ -14,7 +14,7 @@
 - [🚀 Getting Started](#-getting-started)
   - [Add the SFSymbols Swift Package](#add-the-sfsymbols-swift-package)
   - [Use SFSymbolPicker](#use-sfsymbolpicker)
-  - [Present the Picker With .sfSymbolPicker](#present-the-picker-with-sfsymbolpicker)
+  - [Present the Picker With .sfSymbolPicker(...)](#present-the-picker-with-sfsymbolpicker)
   - [Load and Browse Symbols With SFSymbols](#load-and-browse-symbols-with-sfsymbols)
 - [📱 Example Project](#-example-project)
 
