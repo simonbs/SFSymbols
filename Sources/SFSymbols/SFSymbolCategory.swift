@@ -1,5 +1,3 @@
-import Foundation
-
 public struct SFSymbolCategory: Identifiable, Hashable, Sendable {
     public let id: String
     public let key: String
