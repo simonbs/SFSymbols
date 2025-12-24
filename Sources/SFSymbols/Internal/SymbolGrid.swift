@@ -75,7 +75,7 @@ private extension SymbolGrid {
             }
         }
         private var strokeStyle: some ShapeStyle {
-            isSelected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.separator)
+            isSelected ? AnyShapeStyle(Color.blue) : AnyShapeStyle(.separator)
         }
         private var strokeWidth: CGFloat {
             isSelected ? 2 : 1 / displayScale
