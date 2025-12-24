@@ -21,8 +21,8 @@ struct PopoverSFSymbolPicker: View {
                         .textFieldStyle(.plain)
                         .focused($isSearchedFocused)
                 }
-                .padding(.horizontal, 7)
-                .padding(.vertical, 5)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
                 .background(Capsule().fill(.ultraThinMaterial.opacity(0.85)))
                 .overlay(Capsule().stroke(.separator, lineWidth: 1))
             })
