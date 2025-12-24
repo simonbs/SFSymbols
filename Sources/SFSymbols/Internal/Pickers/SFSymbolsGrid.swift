@@ -100,11 +100,11 @@ private extension SFSymbolsGrid {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .fill(backgroundStyle)
                     #if os(macOS)
-                    .opacity(0.3)
+                    .opacity(0.6)
                     #endif
                 #if os(macOS)
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(.regularMaterial)
+                    .fill(.ultraThinMaterial)
                 #endif
             }
             .overlay {
