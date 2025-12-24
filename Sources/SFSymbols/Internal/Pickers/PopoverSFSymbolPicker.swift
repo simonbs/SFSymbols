@@ -4,6 +4,7 @@ struct PopoverSFSymbolPicker: View {
     @Binding var selection: String?
 
     @State private var searchText = ""
+    @FocusState private var isSearchedFocused: Bool
 
     var body: some View {
         SFSymbolsLoader { symbols in
@@ -18,6 +19,7 @@ struct PopoverSFSymbolPicker: View {
                         .foregroundStyle(.placeholder)
                     TextField("Search", text: $searchText, prompt: Text("Search"))
                         .textFieldStyle(.plain)
+                        .focused($isSearchedFocused)
                 }
                 .padding(.horizontal, 7)
                 .padding(.vertical, 5)
@@ -26,6 +28,11 @@ struct PopoverSFSymbolPicker: View {
             })
         }
         .frame(width: 360, height: 500)
+        #if os(macOS)
+        .onAppear {
+            isSearchedFocused = true
+        }
+        #endif
     }
 }
 
