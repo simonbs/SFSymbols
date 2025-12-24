@@ -36,12 +36,9 @@ struct CategoryFilterPicker: View {
                     GeometryReader { proxy in
                         if let anchor = anchors[selection] {
                             let rect = proxy[anchor]
-                            Circle()
-                                .foregroundStyle(.fill)
-                                .frame(width: 35, height: 35)
+                            SelectionIndicator()
                                 .position(x: rect.midX, y: rect.midY)
                                 .animation(.snappy(duration: 0.18), value: selection)
-                                .allowsHitTesting(false)
                         }
                     }
                 }
@@ -68,6 +65,29 @@ struct CategoryFilterPicker: View {
             }
         }
         .padding(.horizontal, 27)
+    }
+}
+
+private extension CategoryFilterPicker {
+    struct SelectionIndicator: View {
+        @Environment(\.colorScheme) private var colorScheme
+        private var selectionIndicatorColor: Color {
+            switch colorScheme {
+            case .dark:
+                .white.opacity(0.15)
+            case .light:
+                fallthrough
+            @unknown default:
+                .black.opacity(0.1)
+            }
+        }
+
+        var body: some View {
+            Circle()
+                .foregroundStyle(selectionIndicatorColor)
+                .frame(width: 35, height: 35)
+                .allowsHitTesting(false)
+        }
     }
 }
 
