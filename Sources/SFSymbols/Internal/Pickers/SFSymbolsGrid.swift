@@ -94,9 +94,6 @@ private extension SFSymbolsGrid {
         private var strokeStyle: some ShapeStyle {
             isSelected ? AnyShapeStyle(Color.blue) : AnyShapeStyle(.separator)
         }
-        private var strokeWidth: CGFloat {
-            isSelected ? 2 : 1 / displayScale
-        }
 
         var body: some View {
             ZStack {
@@ -118,7 +115,7 @@ private extension SFSymbolsGrid {
             }
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(strokeStyle, lineWidth: strokeWidth)
+                    .stroke(strokeStyle, lineWidth: isSelected ? 2 : 1 / displayScale)
             }
         }
     }
