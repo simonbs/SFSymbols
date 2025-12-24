@@ -64,6 +64,9 @@ struct CategoryFilterPicker: View {
                     .shadow(color: .black.opacity(0.1), radius: 4)
             }
         }
+        #if os(macOS)
+        .shadow(color: .black.opacity(0.1), radius: 6, y: 2)
+        #endif
     }
 }
 

@@ -25,19 +25,19 @@ struct PopoverSFSymbolPicker: View {
     }
 }
 
-private struct SearchSafeAreaBarViewModifier<SearchBar: View>: ViewModifier {
-    @ViewBuilder let searchBar: () -> SearchBar
+private struct SearchSafeAreaBarViewModifier<BarContent: View>: ViewModifier {
+    @ViewBuilder let barContent: () -> BarContent
 
     func body(content: Content) -> some View {
         if #available(iOS 26, macOS 26, *) {
             content.safeAreaBar(edge: .top) {
-                searchBar()
+                barContent()
                     .padding([.horizontal, .top])
             }
         } else {
             content.safeAreaInset(edge: .top) {
                 VStack {
-                    searchBar()
+                    barContent()
                         .padding([.horizontal, .top])
                         .padding(.bottom, 8)
                     Divider()

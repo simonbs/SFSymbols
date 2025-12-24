@@ -48,19 +48,10 @@ struct SFSymbolsView: View {
                 }
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            if !showSearchResults {
-                CategoryFilterPicker(categories: symbols.displayableCategories, selection: $categoryFilter)
-                    .transition(.opacity.animation(.linear(duration: 0.1)))
-                #if os(iOS)
-                    .padding(.horizontal, 27)
-                #elseif os(macOS)
-                    .padding(.horizontal, 14)
-                    .padding(.bottom)
-                    .shadow(color: .black.opacity(0.1), radius: 6, y: 2)
-                #endif
-            }
-        }
+        .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: !showSearchResults) {
+            CategoryFilterPicker(categories: symbols.displayableCategories, selection: $categoryFilter)
+                .transition(.opacity.animation(.linear(duration: 0.1)))
+        })
         .onAppear {
             updateCurrentResults()
         }
@@ -105,6 +96,36 @@ private extension SFSymbolsView {
                     return
                 }
                 self.currentSymbols = resultSymbols
+            }
+        }
+    }
+}
+
+private struct CategoryFilterSafeAreaBarViewModifier<BarContent: View>: ViewModifier {
+    let isEnabled: Bool
+    @ViewBuilder let barContent: () -> BarContent
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26, macOS 26, *) {
+            content.safeAreaBar(edge: .bottom) {
+                if isEnabled {
+                    barContent()
+                    #if os(iOS)
+                        .padding(.horizontal, 28)
+                    #elseif os(macOS)
+                        .padding([.horizontal, .bottom])
+                    #endif
+                        .transition(.opacity.animation(.linear(duration: 0.15)))
+                }
+            }
+        } else {
+            content.safeAreaInset(edge: .bottom) {
+                if isEnabled {
+                    barContent()
+                        .padding([.horizontal, .bottom])
+                        .padding(.top, 8)
+                        .transition(.opacity.animation(.linear(duration: 0.15)))
+                }
             }
         }
     }
