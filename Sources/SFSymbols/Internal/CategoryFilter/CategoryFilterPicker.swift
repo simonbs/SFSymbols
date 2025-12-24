@@ -55,16 +55,15 @@ struct CategoryFilterPicker: View {
         .frame(height: 44)
         .coordinateSpace(name: "CategoryFilterPicker")
         .background {
+            #if os(visionOS)
+            RegularBackgroundView()
+            #else
             if #available(iOS 26, macOS 26, watchOS 26, *) {
-                Color.clear
-                    .glassEffect(.regular.interactive(), in: .capsule)
+                GlassEffectBackgroundView()
             } else {
-                #if !os(watchOS)
-                Capsule()
-                    .fill(.bar)
-                    .shadow(color: .black.opacity(0.1), radius: 4)
-                #endif
+                RegularBackgroundView()
             }
+            #endif
         }
         #if os(macOS)
         .shadow(color: .black.opacity(0.1), radius: 6, y: 2)
@@ -91,6 +90,27 @@ private extension CategoryFilterPicker {
                 .foregroundStyle(selectionIndicatorColor)
                 .frame(width: 35, height: 35)
                 .allowsHitTesting(false)
+        }
+    }
+
+    @available(iOS 26, macOS 26, watchOS 26, *)
+    @available(visionOS, unavailable)
+    struct GlassEffectBackgroundView: View {
+        var body: some View {
+            Color.clear
+                .glassEffect(.regular.interactive(), in: .capsule)
+        }
+    }
+
+    struct RegularBackgroundView: View {
+        var body: some View {
+            Capsule()
+                #if os(watchOS)
+                .fill(regularMaterial)
+                #else
+                .fill(.bar)
+                #endif
+                .shadow(color: .black.opacity(0.1), radius: 4)
         }
     }
 }
