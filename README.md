@@ -2,7 +2,7 @@
   <img src="recording.gif" width="300" />
   <h1>SFSymbols</h1>
   <h3>SFSymbols gives you a ready-to-use symbol picker for SwiftUI and an API for reading the SF Symbols catalog.</h3>
-  <h4>Use it to let users pick symbols in-app, or to build your own symbol browsing UI.</h4>
+  <h4>Use SFSymbols to let users pick symbols in-app, or to build your own symbol browsing UI.</h4>
 
   [![SwiftLint](https://github.com/simonbs/SFSymbols/actions/workflows/swiftlint.yml/badge.svg)](https://github.com/simonbs/SFSymbols/actions/workflows/swiftlint.yml)
   [![Build](https://github.com/simonbs/SFSymbols/actions/workflows/build.yml/badge.svg)](https://github.com/simonbs/SFSymbols/actions/workflows/build.yml)
