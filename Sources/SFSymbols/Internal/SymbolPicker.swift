@@ -5,44 +5,12 @@ struct SymbolPicker: View {
     let symbols: SFSymbols
 
     @State private var searchText = ""
-    @State private var filter: CategoryFilter = .noFilter
+    @State private var categoryFilter: CategoryFilter = .all
     @FocusState private var isSearchBarFocused: Bool
-    private var safeSearchText: String {
-        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
+    @State private var currentSymbols: [SFSymbol] = []
+    @State private var searchTask: Task<Void, Never>?
     private var showSearchResults: Bool {
-        !safeSearchText.isEmpty
-    }
-    private var enabledCategories: [SFSymbolCategory] {
-        symbols.categories.filter { category in
-            category.key != "whatsnew"
-            && category.key != "variable"
-            && category.key != "multicolor"
-        }
-    }
-    private var currentSymbols: [SFSymbol] {
-        switch (showSearchResults, filter) {
-        case (true, _):
-            let safeSearchText = self.safeSearchText
-            return symbols.symbols.filter { symbol in
-                let terms = [symbol.name] + symbol.searchTerms
-                return terms.contains { $0.localizedCaseInsensitiveContains(safeSearchText) }
-            }
-        case (false, .filter(let category)):
-            return symbols.symbols.filter { $0.categories.contains(category.key) }
-        case (false, .noFilter):
-            return symbols.symbols
-        }
-    }
-    private var currentSymbolsKey: String {
-        switch (showSearchResults, filter) {
-        case (true, _):
-            return "search:\(safeSearchText.lowercased())"
-        case (false, .filter(let category)):
-            return "category:\(category.key)"
-        case (false, .noFilter):
-            return "all"
-        }
+        !searchText.normalizedForSearch.isEmpty
     }
 
     var body: some View {
@@ -61,7 +29,7 @@ struct SymbolPicker: View {
                             .id("top")
                         SymbolGrid(symbols: currentSymbols, selection: $selection)
                     }
-                    .onChange(of: currentSymbolsKey) { _, _ in
+                    .onChange(of: currentSymbols) { _, _ in
                         proxy.scrollTo("top", anchor: .top)
                     }
                 }
@@ -69,7 +37,7 @@ struct SymbolPicker: View {
         }
         .safeAreaInset(edge: .bottom) {
             if !isSearchBarFocused && !showSearchResults {
-                CategoryFilterPicker(categories: enabledCategories, selection: $filter)
+                CategoryFilterPicker(categories: symbols.displayableCategories, selection: $categoryFilter)
                     .transition(.opacity.animation(.linear(duration: 0.1)))
                 #if os(macOS)
                     .padding(.bottom)
@@ -79,6 +47,79 @@ struct SymbolPicker: View {
         }
         .searchable(text: $searchText)
         .modifier(SearchBarFocusedViewModifier(binding: $isSearchBarFocused))
+        .onAppear {
+            updateCurrentResults()
+        }
+        .onChange(of: searchText) { oldValue, _ in
+            updateCurrentResults(oldSearchText: oldValue)
+        }
+        .onChange(of: categoryFilter) { _, _ in
+            updateCurrentResults()
+        }
+    }
+}
+
+private extension SymbolPicker {
+    private func updateCurrentResults(oldSearchText: String = "") {
+        searchTask?.cancel()
+        let oldNormalizedSearchText = oldSearchText.normalizedForSearch
+        let normalizedSearchText = searchText.normalizedForSearch
+        let symbols = if !oldSearchText.isEmpty, normalizedSearchText.hasPrefix(oldNormalizedSearchText) {
+            currentSymbols
+        } else {
+            symbols.symbols
+        }
+        searchTask = Task.detached(priority: .userInitiated) { [normalizedSearchText, categoryFilter, symbols] in
+            guard !Task.isCancelled else {
+                return
+            }
+            let resultSymbols = symbols.filtered(using: categoryFilter, searchText: normalizedSearchText)
+            guard !Task.isCancelled else {
+                return
+            }
+            await MainActor.run {
+                guard self.searchText.normalizedForSearch == normalizedSearchText else {
+                    return
+                }
+                guard self.categoryFilter == categoryFilter else {
+                    return
+                }
+                self.currentSymbols = resultSymbols
+            }
+        }
+    }
+}
+
+private extension SFSymbols {
+    var displayableCategories: [SFSymbolCategory] {
+        categories.filter { category in
+            category.key != "whatsnew"
+            && category.key != "variable"
+            && category.key != "multicolor"
+        }
+    }
+}
+
+private extension Array where Element == SFSymbol {
+    func filtered(using categoryFilter: CategoryFilter, searchText: String) -> [Element] {
+        let showSearchResults = !searchText.isEmpty
+        switch (showSearchResults, categoryFilter) {
+        case (false, .category(let category)):
+            return filter { $0.categories.contains(category.key) }
+        case (false, .all):
+            return self
+        case (true, _):
+            return filter { symbol in
+                let terms = [symbol.name] + symbol.searchTerms
+                return terms.contains { $0.localizedCaseInsensitiveContains(searchText) }
+            }
+        }
+    }
+}
+
+private extension String {
+    var normalizedForSearch: String {
+        trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 }
 

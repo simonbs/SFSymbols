@@ -6,7 +6,7 @@ struct CategoryFilterPicker: View {
 
     @State private var didScrollToSelection = false
     private var filters: [CategoryFilter] {
-        [.noFilter] + categories.map { .filter($0) }
+        [.all] + categories.map { .category($0) }
     }
 
     var body: some View {

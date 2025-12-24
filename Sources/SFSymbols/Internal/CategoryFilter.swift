@@ -1,23 +1,23 @@
 import SwiftUI
 
 enum CategoryFilter: Identifiable, Hashable, Sendable {
-    case noFilter
-    case filter(SFSymbolCategory)
+    case all
+    case category(SFSymbolCategory)
 
     var id: String {
         switch self {
-        case .noFilter:
-            "noFilter"
-        case .filter(let category):
-            "filter:\(category.key)"
+        case .all:
+            "all"
+        case .category(let category):
+            "category:\(category.key)"
         }
     }
 
     var image: Image {
         switch self {
-        case .noFilter:
+        case .all:
             Image(systemName: "square.grid.2x2")
-        case .filter(let category):
+        case .category(let category):
             Image(systemName: category.icon.name)
         }
     }
