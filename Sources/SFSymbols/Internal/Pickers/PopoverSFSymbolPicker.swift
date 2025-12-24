@@ -16,13 +16,13 @@ struct PopoverSFSymbolPicker: View {
                 HStack(spacing: 4) {
                     Image(systemName: "magnifyingglass")
                         .foregroundStyle(.placeholder)
-                TextField("Search", text: $searchText, prompt: Text("Search"))
-                    .textFieldStyle(.plain)
+                    TextField("Search", text: $searchText, prompt: Text("Search"))
+                        .textFieldStyle(.plain)
                 }
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 5)
-                    .background(Capsule().fill(.ultraThinMaterial.opacity(0.85)))
-                    .overlay(Capsule().stroke(.separator, lineWidth: 1))
+                .padding(.horizontal, 7)
+                .padding(.vertical, 5)
+                .background(Capsule().fill(.ultraThinMaterial.opacity(0.85)))
+                .overlay(Capsule().stroke(.separator, lineWidth: 1))
             })
         }
         .frame(width: 360, height: 500)
@@ -40,10 +40,9 @@ private struct SearchSafeAreaBarViewModifier<BarContent: View>: ViewModifier {
             }
         } else {
             content.safeAreaInset(edge: .top) {
-                VStack {
+                VStack(spacing: 0) {
                     barContent()
-                        .padding([.horizontal, .top])
-                        .padding(.bottom, 8)
+                        .padding()
                     Divider()
                 }
                 .background(.ultraThinMaterial)

@@ -121,10 +121,13 @@ private struct CategoryFilterSafeAreaBarViewModifier<BarContent: View>: ViewModi
         } else {
             content.safeAreaInset(edge: .bottom) {
                 if isEnabled {
-                    barContent()
-                        .padding([.horizontal, .bottom])
-                        .padding(.top, 8)
-                        .transition(.opacity.animation(.linear(duration: 0.15)))
+                    VStack(spacing: 0) {
+                        Divider()
+                        barContent()
+                            .padding()
+                    }
+                    .background(.ultraThinMaterial)
+                    .transition(.opacity.animation(.linear(duration: 0.15)))
                 }
             }
         }
