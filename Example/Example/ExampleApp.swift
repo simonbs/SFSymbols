@@ -5,7 +5,7 @@ struct ExampleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-            #if os(macOS)
+            #if os(macOS) || os(visionOS)
                 .frame(
                     minWidth: 400,
                     idealWidth: 500,
@@ -18,6 +18,8 @@ struct ExampleApp: App {
         }
         #if os(macOS)
         .windowStyle(.hiddenTitleBar)
+        #endif
+        #if os(macOS) || os(visionOS)
         .windowResizability(.contentSize)
         #endif
     }

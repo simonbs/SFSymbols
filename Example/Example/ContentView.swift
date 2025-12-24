@@ -8,6 +8,9 @@ struct ContentView: View {
         NavigationStack {
             Form {
                 SFSymbolPicker("Symbol", selection: $selectedSFSymbol)
+                #if os(visionOS)
+                    .tint(.primary)
+                #endif
             }
             .navigationTitle("Example")
         }
