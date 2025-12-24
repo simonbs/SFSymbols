@@ -55,13 +55,15 @@ struct CategoryFilterPicker: View {
         .frame(height: 44)
         .coordinateSpace(name: "CategoryFilterPicker")
         .background {
-            if #available(iOS 26, macOS 26, *) {
+            if #available(iOS 26, macOS 26, watchOS 26, *) {
                 Color.clear
                     .glassEffect(.regular.interactive(), in: .capsule)
             } else {
+                #if !os(watchOS)
                 Capsule()
                     .fill(.bar)
                     .shadow(color: .black.opacity(0.1), radius: 4)
+                #endif
             }
         }
         #if os(macOS)

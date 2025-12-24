@@ -106,7 +106,7 @@ private struct CategoryFilterSafeAreaBarViewModifier<BarContent: View>: ViewModi
     @ViewBuilder let barContent: () -> BarContent
 
     func body(content: Content) -> some View {
-        if #available(iOS 26, macOS 26, *) {
+        if #available(iOS 26, macOS 26, watchOS 26, *) {
             content.safeAreaBar(edge: .bottom) {
                 if isEnabled {
                     barContent()

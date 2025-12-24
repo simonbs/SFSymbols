@@ -40,7 +40,7 @@ private struct SearchSafeAreaBarViewModifier<BarContent: View>: ViewModifier {
     @ViewBuilder let barContent: () -> BarContent
 
     func body(content: Content) -> some View {
-        if #available(iOS 26, macOS 26, *) {
+        if #available(iOS 26, macOS 26, watchOS 26, *) {
             content.safeAreaBar(edge: .top) {
                 barContent()
                     .padding([.horizontal, .top])
