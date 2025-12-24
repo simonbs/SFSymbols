@@ -3,15 +3,24 @@ import SwiftUI
 struct SFSymbolsView: View {
     @Binding var selection: String?
     let symbols: SFSymbols
+    let searchText: String
 
-    @State private var searchText = ""
     @State private var categoryFilter: CategoryFilter = .all
-    @FocusState private var isSearchBarFocused: Bool
     @State private var currentSymbols: [SFSymbol] = []
     @State private var searchTask: Task<Void, Never>?
     private var showSearchResults: Bool {
         !searchText.normalizedForSearch.isEmpty
     }
+    #if os(macOS)
+    private var scrollContentTopMargin: CGFloat {
+        if #available(macOS 26, *) {
+            // Add margin to look harmonious with search bar.
+            8
+        } else {
+            0
+        }
+    }
+    #endif
 
     var body: some View {
         ZStack {
@@ -21,6 +30,7 @@ struct SFSymbolsView: View {
                     systemImage: "magnifyingglass",
                     description: Text("No results found for ”\(searchText)”")
                 )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollViewReader { proxy in
                     ScrollView {
@@ -30,7 +40,7 @@ struct SFSymbolsView: View {
                         SFSymbolsGrid(symbols: currentSymbols, selection: $selection)
                     }
                     #if os(macOS)
-                    .contentMargins(.top, 8, for: .scrollContent)
+                    .contentMargins(.top, scrollContentTopMargin, for: .scrollContent)
                     #endif
                     .onChange(of: currentSymbols) { _, _ in
                         proxy.scrollTo("top", anchor: .top)
@@ -39,7 +49,7 @@ struct SFSymbolsView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if !isSearchBarFocused && !showSearchResults {
+            if !showSearchResults {
                 CategoryFilterPicker(categories: symbols.displayableCategories, selection: $categoryFilter)
                     .transition(.opacity.animation(.linear(duration: 0.1)))
                 #if os(iOS)
@@ -51,8 +61,6 @@ struct SFSymbolsView: View {
                 #endif
             }
         }
-        .searchable(text: $searchText)
-        .modifier(SearchBarFocusedViewModifier(binding: $isSearchBarFocused))
         .onAppear {
             updateCurrentResults()
         }
@@ -132,17 +140,5 @@ private extension Array where Element == SFSymbol {
 private extension String {
     var normalizedForSearch: String {
         trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-    }
-}
-
-private struct SearchBarFocusedViewModifier: ViewModifier {
-    @FocusState<Bool>.Binding var binding: Bool
-
-    func body(content: Content) -> some View {
-        if #available(iOS 18, macOS 15, *) {
-            content.searchFocused($binding)
-        } else {
-            content
-        }
     }
 }

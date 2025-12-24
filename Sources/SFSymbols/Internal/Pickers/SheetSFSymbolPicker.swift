@@ -4,14 +4,20 @@ struct SheetSFSymbolPicker: View {
     @Binding var selection: String?
 
     @Environment(\.dismiss) private var dismiss
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
             SFSymbolsLoader { symbols in
-                SFSymbolsView(selection: $selection, symbols: symbols)
+                SFSymbolsView(
+                    selection: $selection,
+                    symbols: symbols,
+                    searchText: searchText
+                )
             }
             .background(BackgroundView())
             .navigationTitle("Symbols")
+            .searchable(text: $searchText)
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
