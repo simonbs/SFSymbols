@@ -68,6 +68,7 @@ struct CategoryFilterPicker: View {
         #if os(macOS)
         .shadow(color: .black.opacity(0.1), radius: 6, y: 2)
         #endif
+        .sensoryFeedback(.selection, trigger: selection)
     }
 }
 

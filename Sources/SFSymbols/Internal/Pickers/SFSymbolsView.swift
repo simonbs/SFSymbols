@@ -64,6 +64,7 @@ struct SFSymbolsView: View {
         .onChange(of: categoryFilter) { _, _ in
             updateCurrentResults()
         }
+        .sensoryFeedback(.selection, trigger: selection)
     }
 }
 
