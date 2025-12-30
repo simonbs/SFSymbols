@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-public struct SFSymbols {
+public struct SFSymbols: Sendable {
     public let symbols: [SFSymbol]
     public let categories: [SFSymbolCategory]
 
