@@ -40,7 +40,29 @@ public extension View {
     }
 
     @ViewBuilder
+    func sfSymbolPickerVariableValue(_ value: Double) -> some View {
+        environment(\.symbolPickerVariableValue, value)
+    }
+
+    @available(iOS 26, macOS 26, *)
+    @ViewBuilder
+    func sfSymbolPickerVariableValueMode(_ variableValueMode: SymbolVariableValueMode) -> some View {
+        if variableValueMode == .draw {
+            environment(\.symbolPickerVariableValueModeSetting, .draw)
+        } else if variableValueMode == .color {
+            environment(\.symbolPickerVariableValueModeSetting, .color)
+        } else {
+            self
+        }
+    }
+
+    @ViewBuilder
     func sfSymbolPickerPreviewUsesRenderingMode(_ isEnabled: Bool) -> some View {
         environment(\.symbolPickerPreviewUsesRenderingMode, isEnabled)
+    }
+
+    @ViewBuilder
+    func sfSymbolPickerPreviewUsesVariableValue(_ isEnabled: Bool) -> some View {
+        environment(\.symbolPickerPreviewUsesVariableValue, isEnabled)
     }
 }

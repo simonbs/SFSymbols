@@ -8,6 +8,8 @@ struct SFSymbolTile: View {
     @Environment(\.displayScale) private var displayScale
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.symbolBackgroundSetting) private var symbolBackgroundSetting
+    @Environment(\.symbolPickerVariableValue) private var variableValue
+    @Environment(\.symbolPickerVariableValueModeSetting) private var variableValueModeSetting
     private var cornerRadius: CGFloat {
         round(12 * scale)
     }
@@ -25,9 +27,10 @@ struct SFSymbolTile: View {
     var body: some View {
         BackgroundView(cornerRadius: cornerRadius)
             .overlay {
-                Image(systemName: systemName)
+                Image(systemName: systemName, variableValue: variableValue)
                     .font(.system(size: 18 * scale, weight: .regular))
                     .modifier(SFSymbolStyleViewModifier())
+                    .symbolVariableValueModeSetting(variableValueModeSetting)
             }
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)

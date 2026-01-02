@@ -5,6 +5,9 @@ public struct SFSymbolPicker: View {
     @Binding private var selection: String?
     @State private var isPresented = false
     @Environment(\.symbolPickerPreviewUsesRenderingMode) private var previewUsesRenderingMode
+    @Environment(\.symbolPickerPreviewUsesVariableValue) private var previewUsesVariableValue
+    @Environment(\.symbolPickerVariableValueModeSetting) private var variableValueModeSetting
+    @Environment(\.symbolPickerVariableValue) private var symbolPickerVariableValue
 
     public init(
         _ titleResource: LocalizedStringResource,
@@ -34,10 +37,18 @@ public struct SFSymbolPicker: View {
                 Group {
                     if let selection {
                         Group {
-                            if previewUsesRenderingMode {
+                            if previewUsesRenderingMode && previewUsesVariableValue {
+                                Image(systemName: selection, variableValue: symbolPickerVariableValue)
+                                    .symbolVariableValueModeSetting(variableValueModeSetting)
+                                    .modifier(SFSymbolStyleViewModifier())
+                            } else if previewUsesRenderingMode {
                                 Image(systemName: selection)
                                     .modifier(SFSymbolStyleViewModifier())
-                            } else{
+                            } else if previewUsesVariableValue {
+                                Image(systemName: selection, variableValue: symbolPickerVariableValue)
+                                    .symbolVariableValueModeSetting(variableValueModeSetting)
+                                    .foregroundStyle(.tint)
+                            } else {
                                 Image(systemName: selection)
                                     .foregroundStyle(.tint)
                             }

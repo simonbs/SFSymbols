@@ -1,5 +1,31 @@
 import SwiftUI
 
+enum SymbolBackgroundSetting: Identifiable, Hashable, CaseIterable {
+    case `default`
+    case light
+    case dark
+
+    var id: Self {
+        self
+    }
+
+    var title: LocalizedStringResource {
+        switch self {
+        case .default:
+            "Default"
+        case .light:
+            "Light"
+        case .dark:
+            "Dark"
+        }
+    }
+}
+
+enum SymbolColorRenderingModeSetting: Hashable, Sendable {
+    case flat
+    case gradient
+}
+
 struct SymbolColorsSetting: Hashable, Sendable {
     let primaryColor: Color
     let secondaryColor: Color?
@@ -30,15 +56,7 @@ struct SymbolColorsSetting: Hashable, Sendable {
     }
 }
 
-extension View {
-    @ViewBuilder
-    func symbolColors(_ setting: SymbolColorsSetting) -> some View {
-        if let secondaryColor = setting.secondaryColor, let tertiaryColor = setting.tertiaryColor {
-            foregroundStyle(setting.primaryColor, secondaryColor, tertiaryColor)
-        } else if let secondaryColor = setting.secondaryColor {
-            foregroundStyle(setting.primaryColor, secondaryColor)
-        } else {
-            foregroundStyle(setting.primaryColor)
-        }
-    }
+enum SymbolVariableValueModeSetting: Hashable, Sendable {
+    case color
+    case draw
 }

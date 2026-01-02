@@ -16,7 +16,19 @@ private struct SymbolBackgroundSettingEnvironmentKey: EnvironmentKey {
     static let defaultValue: SymbolBackgroundSetting = .default
 }
 
+private struct SymbolPickerVariableValueEnvironmentKey: EnvironmentKey {
+    static let defaultValue: Double = 1
+}
+
+private struct SymbolPickerVariableValueModeEnvironmentKey: EnvironmentKey {
+    static let defaultValue: SymbolVariableValueModeSetting = .color
+}
+
 private struct SymbolPickerPreviewUsesRenderingModeEnvironmentKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+private struct SymbolPickerPreviewUsesVariableValueEnvironmentKey: EnvironmentKey {
     static let defaultValue = false
 }
 
@@ -41,8 +53,23 @@ extension EnvironmentValues {
         set { self[SymbolBackgroundSettingEnvironmentKey.self] = newValue }
     }
 
+    var symbolPickerVariableValue: Double {
+        get { self[SymbolPickerVariableValueEnvironmentKey.self] }
+        set { self[SymbolPickerVariableValueEnvironmentKey.self] = newValue }
+    }
+
+    var symbolPickerVariableValueModeSetting: SymbolVariableValueModeSetting {
+        get { self[SymbolPickerVariableValueModeEnvironmentKey.self] }
+        set { self[SymbolPickerVariableValueModeEnvironmentKey.self] = newValue }
+    }
+
     var symbolPickerPreviewUsesRenderingMode: Bool {
         get { self[SymbolPickerPreviewUsesRenderingModeEnvironmentKey.self] }
         set { self[SymbolPickerPreviewUsesRenderingModeEnvironmentKey.self] = newValue }
+    }
+
+    var symbolPickerPreviewUsesVariableValue: Bool {
+        get { self[SymbolPickerPreviewUsesVariableValueEnvironmentKey.self] }
+        set { self[SymbolPickerPreviewUsesVariableValueEnvironmentKey.self] = newValue }
     }
 }

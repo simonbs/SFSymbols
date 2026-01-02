@@ -38,21 +38,3 @@ extension SymbolRenderingMode {
         }
     }
 }
-
-extension View {
-    func gradientSymbolColorRenderingMode(_ gradient: Bool) -> some View {
-        modifier(GradientSymbolColorRenderingMode(gradient: gradient))
-    }
-}
-
-private struct GradientSymbolColorRenderingMode: ViewModifier {
-    let gradient: Bool
-
-    func body(content: Content) -> some View {
-        if #available(iOS 26, macOS 26, *) {
-            content.symbolColorRenderingMode(gradient ? .gradient : .flat)
-        } else {
-            content
-        }
-    }
-}

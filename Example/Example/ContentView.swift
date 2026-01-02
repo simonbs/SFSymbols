@@ -2,13 +2,16 @@ import SFSymbols
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedSFSymbol = "sun.rain.fill"
-    @State private var renderingMode: SymbolRenderingModeSetting = .monochrome
+    @State private var selectedSFSymbol = "heart"
+    @State private var renderingMode: SymbolRenderingModeSetting = .hierarchical
     @State private var primaryColor: Color = .primary
     @State private var secondaryColor: Color = .blue
     @State private var tertiaryColor: Color = .gray
     @State private var isGradientEnabled = false
-    @State private var stylePreview = false
+    @State private var variableValueMode: SymbolVariableValueModeSetting = .draw
+    @State private var variableValue: Double = 100
+    @State private var previewUsesRenderingMode = false
+    @State private var previewUsesVariableValue = false
 
     var body: some View {
         NavigationStack {
@@ -21,7 +24,10 @@ struct ContentView: View {
                         .sfSymbolPickerRenderingMode(SymbolRenderingMode(renderingMode))
                         .backportedSFSymbolPickerColorRenderingMode(isGradientEnabled ? .gradient : .flat)
                         .sfSymbolPickerForegroundStyle(primaryColor, secondaryColor, tertiaryColor)
-                        .sfSymbolPickerPreviewUsesRenderingMode(stylePreview)
+                        .sfSymbolPickerVariableValue(variableValue / 100)
+                        .backportedSFSymbolPickerVariableValueMode(variableValueMode)
+                        .sfSymbolPickerPreviewUsesRenderingMode(previewUsesRenderingMode)
+                        .sfSymbolPickerPreviewUsesVariableValue(previewUsesVariableValue)
                 }
                 #if os(macOS)
                 Divider()
@@ -30,8 +36,8 @@ struct ContentView: View {
                 #endif
                 Section {
                     Picker(selection: $renderingMode) {
-                        ForEach(SymbolRenderingModeSetting.allCases) { kind in
-                            Text(kind.title)
+                        ForEach(SymbolRenderingModeSetting.allCases) { setting in
+                            Text(setting.title)
                         }
                     } label: {
                         Text("Rendering Mode")
@@ -69,7 +75,36 @@ struct ContentView: View {
                     .padding(.vertical)
                 #endif
                 Section {
-                    Toggle("Style Preview", isOn: $stylePreview)
+                    Picker(selection: $variableValueMode) {
+                        ForEach(SymbolVariableValueModeSetting.allCases) { setting in
+                            Text(setting.title)
+                        }
+                    } label: {
+                        Text("Variable Value Mode")
+                    }
+                    LabeledContent {
+                        HStack {
+                            Slider(value: $variableValue, in: 0 ... 100)
+                                .frame(width: 200)
+                            ZStack {
+                                Text("888%")
+                                    .opacity(0)
+                                Text("\(Int(round(variableValue)))%")
+                            }
+                            .monospacedDigit()
+                        }
+                    } label: {
+                        Text("Variable Value")
+                    }
+                }
+                #if os(macOS)
+                Divider()
+                    .frame(maxWidth: 200)
+                    .padding(.vertical)
+                #endif
+                Section {
+                    Toggle("Preview Uses Rendering Mode", isOn: $previewUsesRenderingMode)
+                    Toggle("Preview Uses Variable Value", isOn: $previewUsesVariableValue)
                 }
             }
             .navigationTitle("Example")

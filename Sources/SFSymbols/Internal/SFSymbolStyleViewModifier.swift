@@ -9,22 +9,6 @@ struct SFSymbolStyleViewModifier: ViewModifier {
         content
             .symbolRenderingMode(symbolPickerRenderingMode)
             .symbolColorRenderingModeSetting(symbolColorRenderingModeSetting)
-            .symbolColors(symbolColorsSetting)
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func symbolColorRenderingModeSetting(_ setting: SymbolColorRenderingModeSetting) -> some View {
-        if #available(iOS 26, macOS 26, *) {
-            switch setting {
-            case .flat:
-                symbolColorRenderingMode(.flat)
-            case .gradient:
-                symbolColorRenderingMode(.gradient)
-            }
-        } else {
-            self
-        }
+            .symbolColorsSetting(symbolColorsSetting)
     }
 }
