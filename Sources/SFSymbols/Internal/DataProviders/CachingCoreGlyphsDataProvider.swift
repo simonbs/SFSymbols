@@ -20,41 +20,46 @@ final class CachingCoreGlyphsDataProvider: CoreGlyphsDataProvider {
         }
     }
 
-    private let logger = Logger(subsystem: "SFSymbols", category: "CachingCoreGlyphsDataProvider")
     private let dataProvider: CoreGlyphsDataProvider
-    private let cacheDirectory: URL
+    private let cacheStorage: CacheStorage
 
     init(wrapping dataProvider: CoreGlyphsDataProvider, cacheDirectory: URL) {
         self.dataProvider = dataProvider
-        self.cacheDirectory = cacheDirectory
+        self.cacheStorage = CacheStorage(directory: cacheDirectory)
     }
 
     func data(forPlistNamed filename: String) async throws -> Data {
         do {
             let data = try await dataProvider.data(forPlistNamed: filename)
-            await cacheLocally(data, filename: filename)
+            Task { await cacheStorage.write(data, filename: filename) }
             return data
         } catch {
-            return try loadFromCache(filename: filename, underlyingError: error)
+            return try await cacheStorage.read(filename: filename, underlyingError: error)
         }
     }
 }
 
-private extension CachingCoreGlyphsDataProvider {
-    private func cacheLocally(_ data: Data, filename: String) async {
-        let fileURL = cacheFileURL(for: filename)
+private actor CacheStorage {
+    private let logger = Logger(subsystem: "SFSymbols", category: "CacheStorage")
+    private let directory: URL
+    private var directoryCreated = false
+
+    init(directory: URL) {
+        self.directory = directory
+    }
+
+    func write(_ data: Data, filename: String) {
         do {
-            try FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
-            try data.write(to: fileURL, options: .atomic)
+            try createDirectoryIfNeeded()
+            try data.write(to: fileURL(for: filename), options: .atomic)
         } catch {
             // Caching failures are non-fatal. We still have the data from the bundle.
         }
     }
 
-    private func loadFromCache(filename: String, underlyingError: Error) throws -> Data {
+    func read(filename: String, underlyingError: Error) throws -> Data {
         do {
-            let fileURL = cacheFileURL(for: filename)
-            return try Data(contentsOf: fileURL)
+            return try Data(contentsOf: fileURL(for: filename))
         } catch {
             logger.error(
                 """
@@ -63,11 +68,19 @@ private extension CachingCoreGlyphsDataProvider {
                 Cache error: \(error.localizedDescription)
                 """
             )
-            throw ReadError.cacheUnavailable(underlyingError: underlyingError)
+            throw CachingCoreGlyphsDataProvider.ReadError.cacheUnavailable(underlyingError: underlyingError)
         }
     }
 
-    private func cacheFileURL(for filename: String) -> URL {
-        cacheDirectory.appendingPathComponent("\(filename).plist")
+    private func createDirectoryIfNeeded() throws {
+        guard !directoryCreated else {
+            return
+        }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        directoryCreated = true
+    }
+
+    private func fileURL(for filename: String) -> URL {
+        directory.appendingPathComponent("\(filename).plist")
     }
 }
