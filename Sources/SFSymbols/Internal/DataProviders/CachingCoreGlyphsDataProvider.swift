@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 final class CachingCoreGlyphsDataProvider: CoreGlyphsDataProvider {
     enum ReadError: LocalizedError, CustomDebugStringConvertible {
@@ -16,6 +17,7 @@ final class CachingCoreGlyphsDataProvider: CoreGlyphsDataProvider {
         }
     }
     
+    private let logger = Logger(subsystem: "SFSymbols", category: "CachingCoreGlyphsDataProvider")
     private let dataProvider: CoreGlyphsDataProvider
     private let cacheDirectory: URL
     
@@ -51,6 +53,7 @@ private extension CachingCoreGlyphsDataProvider {
             let fileURL = cacheFileURL(for: filename)
             return try Data(contentsOf: fileURL)
         } catch {
+            logger.error("Failed reading '\(filename)'. Bundle error: \(underlyingError.localizedDescription). Cache error: \(error.localizedDescription)")
             throw ReadError.cacheUnavailable(underlyingError: underlyingError)
         }
     }
