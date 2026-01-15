@@ -3,11 +3,11 @@ import Foundation
 final class CachingCoreGlyphsDataProvider: CoreGlyphsDataProvider {
     enum ReadError: LocalizedError, CustomDebugStringConvertible {
         case cacheUnavailable(underlyingError: Error)
-
+        
         var errorDescription: String? {
             debugDescription
         }
-
+        
         var debugDescription: String {
             switch self {
             case .cacheUnavailable(let underlyingError):
@@ -15,18 +15,18 @@ final class CachingCoreGlyphsDataProvider: CoreGlyphsDataProvider {
             }
         }
     }
-
-    private let wrapped: CoreGlyphsDataProvider
+    
+    private let dataProvider: CoreGlyphsDataProvider
     private let cacheDirectory: URL
-
-    init(wrapping provider: CoreGlyphsDataProvider, cacheDirectory: URL) {
-        self.wrapped = provider
+    
+    init(wrapping dataProvider: CoreGlyphsDataProvider, cacheDirectory: URL) {
+        self.dataProvider = dataProvider
         self.cacheDirectory = cacheDirectory
     }
-
+    
     func data(forPlistNamed filename: String) async throws -> Data {
         do {
-            let data = try await wrapped.data(forPlistNamed: filename)
+            let data = try await dataProvider.data(forPlistNamed: filename)
             await cacheLocally(data, filename: filename)
             return data
         } catch {
@@ -37,15 +37,15 @@ final class CachingCoreGlyphsDataProvider: CoreGlyphsDataProvider {
 
 private extension CachingCoreGlyphsDataProvider {
     private func cacheLocally(_ data: Data, filename: String) async {
+        let fileURL = cacheFileURL(for: filename)
         do {
             try FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
-            let fileURL = cacheFileURL(for: filename)
             try data.write(to: fileURL, options: .atomic)
         } catch {
             // Caching failures are non-fatal. We still have the data from the bundle.
         }
     }
-
+    
     private func loadFromCache(filename: String, underlyingError: Error) throws -> Data {
         do {
             let fileURL = cacheFileURL(for: filename)
@@ -54,7 +54,7 @@ private extension CachingCoreGlyphsDataProvider {
             throw ReadError.cacheUnavailable(underlyingError: underlyingError)
         }
     }
-
+    
     private func cacheFileURL(for filename: String) -> URL {
         cacheDirectory.appendingPathComponent("\(filename).plist")
     }
