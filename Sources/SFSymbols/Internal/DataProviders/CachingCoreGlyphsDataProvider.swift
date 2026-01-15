@@ -51,7 +51,14 @@ private actor CacheStorage {
     func write(_ data: Data, filename: String) {
         do {
             try createDirectoryIfNeeded()
-            try data.write(to: fileURL(for: filename), options: .atomic)
+            let url = fileURL(for: filename)
+            try data.write(to: url, options: .atomic)
+            #if os(iOS)
+            try FileManager.default.setAttributes(
+                [.protectionKey: FileProtectionType.none],
+                ofItemAtPath: url.path()
+            )
+            #endif
         } catch {
             // Caching failures are non-fatal. We still have the data from the bundle.
         }
@@ -76,7 +83,15 @@ private actor CacheStorage {
         guard !directoryCreated else {
             return
         }
+        #if os(iOS)
+        try FileManager.default.createDirectory(
+            at: directory,
+            withIntermediateDirectories: true,
+            attributes: [.protectionKey: FileProtectionType.none]
+        )
+        #else
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        #endif
         directoryCreated = true
     }
 
