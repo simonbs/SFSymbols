@@ -19,7 +19,7 @@ enum SymbolVariableValueModeSetting: String, CaseIterable, Identifiable {
     }
 }
 
-@available(macOS 26.0, *)
+@available(iOS 26.0, macOS 26.0, *)
 extension SymbolVariableValueMode {
     init(_ setting: SymbolVariableValueModeSetting) {
         switch setting {

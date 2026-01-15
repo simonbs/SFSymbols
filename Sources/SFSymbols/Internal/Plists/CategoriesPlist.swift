@@ -16,10 +16,6 @@ struct CategoriesPlist: Decodable {
         let container = try decoder.singleValueContainer()
         categories = try container.decode([Category].self)
     }
-
-    static func load(from bundle: Bundle) throws(CoreGlyphsPlistFileReader.ReadError) -> Self {
-        try CoreGlyphsPlistFileReader.readFile(named: "categories", in: bundle, decoding: Self.self)
-    }
 }
 
 extension CategoriesPlist: CustomDebugStringConvertible {

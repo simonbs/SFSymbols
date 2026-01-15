@@ -7,10 +7,6 @@ struct SymbolOrderPlist: Decodable {
         let container = try decoder.singleValueContainer()
         names = try container.decode([String].self)
     }
-
-    static func load(from bundle: Bundle) throws(CoreGlyphsPlistFileReader.ReadError) -> Self {
-        try CoreGlyphsPlistFileReader.readFile(named: "symbol_order", in: bundle, decoding: Self.self)
-    }
 }
 
 extension SymbolOrderPlist: CustomDebugStringConvertible {

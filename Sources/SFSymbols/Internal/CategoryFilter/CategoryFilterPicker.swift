@@ -80,6 +80,7 @@ private extension CategoryFilterPicker {
             case .dark:
                 .white.opacity(0.15)
             case .light:
+                // swiftlint:disable:next fallthrough
                 fallthrough
             @unknown default:
                 .black.opacity(0.1)
