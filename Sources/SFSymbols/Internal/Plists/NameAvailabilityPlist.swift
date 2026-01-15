@@ -203,9 +203,6 @@ struct NameAvailabilityPlist: Decodable {
         return symbols.arrayValue.filter { availableSymbolVersions.contains($0.symbolsVersion) }
     }
 
-    static func load(from bundle: Bundle) throws(CoreGlyphsPlistFileReader.ReadError) -> Self {
-        try CoreGlyphsPlistFileReader.readFile(named: "name_availability", in: bundle, decoding: Self.self)
-    }
 }
 
 extension NameAvailabilityPlist: CustomDebugStringConvertible {

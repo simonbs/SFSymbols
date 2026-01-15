@@ -9,14 +9,14 @@ public struct SFSymbols: Sendable {
 
     public init() async throws {
         do {
-            let bundle = try await CoreGlyphsBundleLoader.load()
-            async let _categoriesPlist = try CategoriesPlist.load(from: bundle)
-            async let _symbolOrderPlist = try SymbolOrderPlist.load(from: bundle)
+            let reader = CoreGlyphsPlistReader()
+            async let _categoriesPlist = try reader.read(plistNamed: "categories", as: CategoriesPlist.self)
+            async let _symbolOrderPlist = try reader.read(plistNamed: "symbol_order", as: SymbolOrderPlist.self)
             let (categoriesPlist, symbolOrderPlist) = try await (_categoriesPlist, _symbolOrderPlist)
-            let (symbols, symbolNameMap) = try await Self.symbols(in: bundle, categoriesPlist: categoriesPlist)
+            let (symbols, symbolNameMap) = try await Self.symbols(using: reader, categoriesPlist: categoriesPlist)
             let sortedSymbols = Self.sortSymbols(symbols, accordingTo: symbolOrderPlist.names)
             self.symbols = sortedSymbols
-            self.categories = try Self.categories(
+            self.categories = Self.categories(
                 categoriesPlist: categoriesPlist,
                 symbols: sortedSymbols,
                 symbolNameMap: symbolNameMap
@@ -30,12 +30,12 @@ public struct SFSymbols: Sendable {
 
 private extension SFSymbols {
     private static func symbols(
-        in bundle: Bundle,
+        using reader: CoreGlyphsPlistReader,
         categoriesPlist: CategoriesPlist
     ) async throws -> ([SFSymbol], [String: SFSymbol]) {
-        async let _nameAvailabilityPlist = try NameAvailabilityPlist.load(from: bundle)
-        async let _symbolSearchPlist = try SymbolSearchPlist.load(from: bundle)
-        async let _symbolCategoriesPlist = try SymbolCategoriesPlist.load(from: bundle)
+        async let _nameAvailabilityPlist = try reader.read(plistNamed: "name_availability", as: NameAvailabilityPlist.self)
+        async let _symbolSearchPlist = try reader.read(plistNamed: "symbol_search", as: SymbolSearchPlist.self)
+        async let _symbolCategoriesPlist = try reader.read(plistNamed: "symbol_categories", as: SymbolCategoriesPlist.self)
         let (nameAvailabilityPlist, symbolSearchPlist, symbolCategoriesPlist) = try await (
             _nameAvailabilityPlist,
             _symbolSearchPlist,
@@ -63,7 +63,7 @@ private extension SFSymbols {
         categoriesPlist: CategoriesPlist,
         symbols: [SFSymbol],
         symbolNameMap: [String: SFSymbol]
-    ) throws -> [SFSymbolCategory] {
+    ) -> [SFSymbolCategory] {
         var categoryKeyMap: [String: [SFSymbol]] = [:]
         categoryKeyMap.reserveCapacity(categoriesPlist.categories.count)
         for category in categoriesPlist.categories {
