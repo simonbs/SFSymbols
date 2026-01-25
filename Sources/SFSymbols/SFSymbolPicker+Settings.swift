@@ -27,7 +27,7 @@ public extension View {
     func sfSymbolPickerForegroundStyle(_ primary: Color, _ secondary: Color) -> some View {
         environment(
             \.symbolColorsSetting,
-             SymbolColorsSetting(primaryColor: primary, secondaryColor: secondary)
+            SymbolColorsSetting(primaryColor: primary, secondaryColor: secondary)
         )
     }
 
@@ -35,7 +35,7 @@ public extension View {
     func sfSymbolPickerForegroundStyle(_ primary: Color, _ secondary: Color, _ tertiary: Color) -> some View {
         environment(
             \.symbolColorsSetting,
-             SymbolColorsSetting(primaryColor: primary, secondaryColor: secondary, tertiaryColor: tertiary)
+            SymbolColorsSetting(primaryColor: primary, secondaryColor: secondary, tertiaryColor: tertiary)
         )
     }
 

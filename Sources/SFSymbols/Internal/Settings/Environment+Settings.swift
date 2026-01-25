@@ -4,6 +4,7 @@ private struct SymbolPickerRenderingModeEnvironmentKey: EnvironmentKey {
     static let defaultValue: SymbolRenderingMode = .monochrome
 }
 
+// swiftlint:disable:next type_name
 private struct SymbolColorRenderingModeSettingEnvironmentKey: EnvironmentKey {
     static let defaultValue: SymbolColorRenderingModeSetting = .flat
 }
@@ -20,14 +21,17 @@ private struct SymbolPickerVariableValueEnvironmentKey: EnvironmentKey {
     static let defaultValue: Double = 1
 }
 
+// swiftlint:disable:next type_name
 private struct SymbolPickerVariableValueModeEnvironmentKey: EnvironmentKey {
     static let defaultValue: SymbolVariableValueModeSetting = .color
 }
 
+// swiftlint:disable:next type_name
 private struct SymbolPickerPreviewUsesRenderingModeEnvironmentKey: EnvironmentKey {
     static let defaultValue = false
 }
 
+// swiftlint:disable:next type_name
 private struct SymbolPickerPreviewUsesVariableValueEnvironmentKey: EnvironmentKey {
     static let defaultValue = false
 }
