@@ -15,6 +15,7 @@
 
 - [🚀 Getting Started](#-getting-started)
   - [Add the SFSymbols Swift Package](#add-the-sfsymbols-swift-package)
+  - [Picker Options](#picker-options)
   - [Use SFSymbolPicker](#use-sfsymbolpicker)
   - [Use SFSymbolPickerGrid (Embedded)](#use-sfsymbolpickergrid-embedded)
   - [Present the Picker With .sfSymbolPicker(...)](#present-the-picker-with-sfsymbolpicker)
@@ -28,14 +29,6 @@
 
 This section walks through adding SFSymbols and using the primary APIs.
 
-### Picker Options
-
-Use one of these entry points depending on how much control you need:
-
-- `SFSymbolPicker` for a ready-made labeled row that presents a modal picker.
-- `.sfSymbolPicker` for attaching the modal picker to your own button or custom row.
-- `SFSymbolPickerGrid` for embedding the grid in your own layout with custom search and filters.
-
 ### Add the SFSymbols Swift Package
 
 Add SFSymbols to your Xcode project or Swift package.
@@ -47,6 +40,14 @@ let package = Package(
     ]
 )
 ```
+
+### Picker Options
+
+Use one of these entry points depending on how much control you need:
+
+- `SFSymbolPicker` for a ready-made labeled row that presents a modal picker.
+- `.sfSymbolPicker` for attaching the modal picker to your own button or custom row.
+- `SFSymbolPickerGrid` for embedding the grid in your own layout with custom search and filters.
 
 ### Use SFSymbolPicker
 
@@ -115,6 +116,7 @@ struct ContentView: View {
 ```
 
 `SFSymbolPickerGrid` accepts both optional and non-optional selection bindings.
+Use `SFSymbolPickerGrid.Configuration` to control padding, spacing, and item sizing.
 
 ### Present the Picker With .sfSymbolPicker(...)
 
