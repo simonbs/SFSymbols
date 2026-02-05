@@ -16,6 +16,7 @@
 - [🚀 Getting Started](#-getting-started)
   - [Add the SFSymbols Swift Package](#add-the-sfsymbols-swift-package)
   - [Use SFSymbolPicker](#use-sfsymbolpicker)
+  - [Use SFSymbolPickerGrid (Embedded)](#use-sfsymbolpickergrid-embedded)
   - [Present the Picker With .sfSymbolPicker(...)](#present-the-picker-with-sfsymbolpicker)
   - [Configure Picker Settings](#configure-picker-settings)
   - [Load and Browse Symbols With SFSymbols](#load-and-browse-symbols-with-sfsymbols)
@@ -25,7 +26,7 @@
 
 ## 🚀 Getting Started
 
-This section walks through adding SFSymbols and using the three primary APIs.
+This section walks through adding SFSymbols and using the primary APIs.
 
 ### Add the SFSymbols Swift Package
 
@@ -59,6 +60,50 @@ struct ContentView: View {
 ```
 
 `SFSymbolPicker` accepts both optional and non-optional bindings. Optional bindings let you clear the selection.
+
+### Use SFSymbolPickerGrid (Embedded)
+
+`SFSymbolPickerGrid` renders the symbol grid and applies filtering based on
+the search text and category filter values you provide.
+
+Use it together with your own search UI and the public `SFSymbolCategoryFilterPicker`.
+
+```swift
+import SFSymbols
+import SwiftUI
+
+struct ContentView: View {
+    @State private var title = ""
+    @State private var selectedSymbol = "folder"
+    @State private var searchText = ""
+    @State private var categoryFilter: SFSymbolCategoryFilter = .all
+    @State private var symbols: SFSymbols?
+
+    var body: some View {
+        VStack {
+            TextField("Title", text: $title)
+            TextField("Search Symbols", text: $searchText)
+            if let symbols {
+                SFSymbolCategoryFilterPicker(
+                    categories: symbols.categories.displayable,
+                    selection: $categoryFilter
+                )
+                SFSymbolPickerGrid(
+                    selection: $selectedSymbol,
+                    symbols: symbols.symbols,
+                    categoryFilter: categoryFilter,
+                    searchText: searchText
+                )
+            }
+        }
+        .task {
+            symbols = try? await SFSymbols()
+        }
+    }
+}
+```
+
+`SFSymbolPickerGrid` accepts both optional and non-optional selection bindings.
 
 ### Present the Picker With .sfSymbolPicker(...)
 
@@ -158,4 +203,4 @@ Each `SFSymbol` includes its `name`, `searchTerms`, and `categories`, so you can
 
 ## 📱 Example Project
 
-Open the example app in `Example/Example.xcodeproj` to see `SFSymbolPicker` in a simple form.
+Open the example app in `Example/Example.xcodeproj` to see both modal and embedded picker examples.

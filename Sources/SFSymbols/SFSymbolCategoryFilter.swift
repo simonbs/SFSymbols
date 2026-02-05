@@ -1,10 +1,10 @@
 import SwiftUI
 
-enum CategoryFilter: Identifiable, Hashable, Sendable {
+public enum SFSymbolCategoryFilter: Identifiable, Hashable, Sendable {
     case all
     case category(SFSymbolCategory)
 
-    var id: String {
+    public var id: String {
         switch self {
         case .all:
             "all"
@@ -12,7 +12,9 @@ enum CategoryFilter: Identifiable, Hashable, Sendable {
             "category:\(category.key)"
         }
     }
+}
 
+extension SFSymbolCategoryFilter {
     var image: Image {
         switch self {
         case .all:

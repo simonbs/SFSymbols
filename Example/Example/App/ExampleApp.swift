@@ -7,12 +7,12 @@ struct ExampleApp: App {
             ContentView()
             #if os(macOS) || os(visionOS)
                 .frame(
-                    minWidth: 400,
-                    idealWidth: 500,
-                    maxWidth: 600,
-                    minHeight: 300,
-                    idealHeight: 375,
-                    maxHeight: 450
+                    minWidth: 420,
+                    idealWidth: 560,
+                    maxWidth: 700,
+                    minHeight: 520,
+                    idealHeight: 680,
+                    maxHeight: 900
                 )
             #endif
         }

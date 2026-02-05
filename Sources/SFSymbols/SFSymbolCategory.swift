@@ -12,7 +12,7 @@ public struct SFSymbolCategory: Identifiable, Hashable, Sendable {
     }
 }
 
-extension Array where Element == SFSymbolCategory {
+public extension Array where Element == SFSymbolCategory {
     private enum Key {
         static let whatsNew = "whatsnew"
         static let variable = "variable"

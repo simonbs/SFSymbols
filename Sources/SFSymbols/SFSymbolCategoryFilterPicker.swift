@@ -1,15 +1,23 @@
 import SwiftUI
 
-struct CategoryFilterPicker: View {
-    let categories: [SFSymbolCategory]
-    @Binding var selection: CategoryFilter
+public struct SFSymbolCategoryFilterPicker: View {
+    private let categories: [SFSymbolCategory]
+    @Binding private var selection: SFSymbolCategoryFilter
 
     @State private var didScrollToSelection = false
-    private var filters: [CategoryFilter] {
+    private var filters: [SFSymbolCategoryFilter] {
         [.all] + categories.map { .category($0) }
     }
 
-    var body: some View {
+    public init(
+        categories: [SFSymbolCategory],
+        selection: Binding<SFSymbolCategoryFilter>
+    ) {
+        self.categories = categories
+        self._selection = selection
+    }
+
+    public var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 HStack(spacing: 0) {
@@ -72,7 +80,7 @@ struct CategoryFilterPicker: View {
     }
 }
 
-private extension CategoryFilterPicker {
+private extension SFSymbolCategoryFilterPicker {
     struct SelectionIndicator: View {
         @Environment(\.colorScheme) private var colorScheme
         private var selectionIndicatorColor: Color {
@@ -118,11 +126,11 @@ private extension CategoryFilterPicker {
 }
 
 nonisolated private struct CategoryFilterItemBoundsKey: PreferenceKey {
-    static let defaultValue: [CategoryFilter: Anchor<CGRect>] = [:]
+    static let defaultValue: [SFSymbolCategoryFilter: Anchor<CGRect>] = [:]
 
     static func reduce(
-        value: inout [CategoryFilter: Anchor<CGRect>],
-        nextValue: () -> [CategoryFilter: Anchor<CGRect>]
+        value: inout [SFSymbolCategoryFilter: Anchor<CGRect>],
+        nextValue: () -> [SFSymbolCategoryFilter: Anchor<CGRect>]
     ) {
         value.merge(nextValue()) { $1 }
     }

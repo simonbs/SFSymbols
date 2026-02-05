@@ -5,21 +5,43 @@ struct SheetSFSymbolPicker: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var searchText = ""
+    @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbolBackgroundSetting: SymbolBackgroundSetting = .default
+    private var edgePadding: CGFloat {
+        #if os(iOS)
+        27
+        #else
+        14
+        #endif
+    }
 
     var body: some View {
         NavigationStack {
             SFSymbolsLoader { symbols in
-                SFSymbolsView(
+                SFSymbolPickerGrid(
                     selection: $selection,
-                    symbols: symbols,
-                    searchText: searchText
+                    symbols: symbols.symbols,
+                    categoryFilter: categoryFilter,
+                    searchText: searchText,
+                    configuration: SFSymbolPickerGrid.Configuration(
+                        edgePadding: edgePadding
+                    )
                 )
+                #if os(macOS)
+                .contentMargins(.top, 8, for: .scrollContent)
+                #endif
+                .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: searchText.normalizedForSearch.isEmpty) {
+                    SFSymbolCategoryFilterPicker(
+                        categories: symbols.categories.displayable,
+                        selection: $categoryFilter
+                    )
+                    .transition(.opacity.animation(.linear(duration: 0.1)))
+                })
                 .environment(\.symbolBackgroundSetting, symbolBackgroundSetting)
             }
             .background(BackgroundView())
             .navigationTitle("Symbols")
-            .searchable(text: $searchText)
+            .searchable(text: $searchText, prompt: Text("Search Symbols"))
             .foregroundStyle(Color.primary)
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
