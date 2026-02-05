@@ -84,7 +84,7 @@ struct ModalPickerDemoView: View {
                 LabeledContent {
                     HStack {
                         Slider(value: $variableValue, in: 0 ... 100)
-                            .frame(width: 200)
+                            .frame(maxWidth: 200)
                         ZStack {
                             Text("888%")
                                 .opacity(0)
