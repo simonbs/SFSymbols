@@ -162,10 +162,10 @@ private struct SearchFieldAndGridClipShape: Shape {
             width: rect.width,
             height: rect.maxY - joinY
         )
-        var p = Path()
-        p.addRect(bodyRect)
-        p.addPath(Capsule().path(in: capsuleRect))
-        return p
+        var path = Path()
+        path.addRect(bodyRect)
+        path.addPath(Capsule().path(in: capsuleRect))
+        return path
     }
 }
 
