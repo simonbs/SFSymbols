@@ -118,6 +118,7 @@ private struct SearchField: View {
     @Binding var searchText: String
 
     @Environment(\.displayScale) private var displayScale
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         HStack(spacing: 4) {
@@ -125,7 +126,18 @@ private struct SearchField: View {
                 .foregroundStyle(.placeholder)
             TextField("Search Symbols", text: $searchText, prompt: Text("Search Symbols"))
                 .textFieldStyle(.plain)
+            if !searchText.isEmpty {
+                Button {
+                    searchText = ""
+                    isFocused = true
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .tint(.secondary)
+            }
         }
+        .focused($isFocused)
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .modifier(SearchFieldBackgroundViewModifier())
