@@ -54,8 +54,7 @@ struct EmbeddedPickerDemoView: View {
                         SearchFieldAndGridClipShape(
                             edgePadding: 16,
                             capsuleHeight: searchTextFieldHeight
-                        ),
-                        style: FillStyle(eoFill: true)
+                        )
                     )
                 }
                 VStack(spacing: 0) {
