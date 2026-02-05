@@ -28,6 +28,14 @@
 
 This section walks through adding SFSymbols and using the primary APIs.
 
+### Picker Options
+
+Use one of these entry points depending on how much control you need:
+
+- `SFSymbolPicker` for a ready-made labeled row that presents a modal picker.
+- `.sfSymbolPicker` for attaching the modal picker to your own button or custom row.
+- `SFSymbolPickerGrid` for embedding the grid in your own layout with custom search and filters.
+
 ### Add the SFSymbols Swift Package
 
 Add SFSymbols to your Xcode project or Swift package.
@@ -64,7 +72,8 @@ struct ContentView: View {
 ### Use SFSymbolPickerGrid (Embedded)
 
 `SFSymbolPickerGrid` renders the symbol grid and applies filtering based on
-the search text and category filter values you provide.
+the search text and category filter values you provide. It does not ship a
+search field or category UI, so you can compose those yourself.
 
 Use it together with your own search UI and the public `SFSymbolCategoryFilterPicker`.
 
@@ -78,6 +87,7 @@ struct ContentView: View {
     @State private var searchText = ""
     @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbols: SFSymbols?
+    private let gridConfiguration = SFSymbolPickerGrid.Configuration(edgePadding: 16)
 
     var body: some View {
         VStack {
@@ -92,7 +102,8 @@ struct ContentView: View {
                     selection: $selectedSymbol,
                     symbols: symbols.symbols,
                     categoryFilter: categoryFilter,
-                    searchText: searchText
+                    searchText: searchText,
+                    configuration: gridConfiguration
                 )
             }
         }
