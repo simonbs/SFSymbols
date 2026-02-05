@@ -7,13 +7,6 @@ struct SheetSFSymbolPicker: View {
     @State private var searchText = ""
     @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbolBackgroundSetting: SymbolBackgroundSetting = .default
-    private var edgePadding: CGFloat {
-        #if os(iOS)
-        27
-        #else
-        14
-        #endif
-    }
 
     var body: some View {
         NavigationStack {
@@ -23,9 +16,7 @@ struct SheetSFSymbolPicker: View {
                     symbols: symbols.symbols,
                     categoryFilter: categoryFilter,
                     searchText: searchText,
-                    configuration: SFSymbolPickerGrid.Configuration(
-                        edgePadding: edgePadding
-                    )
+                    configuration: .modal
                 )
                 #if os(macOS)
                 .contentMargins(.top, 8, for: .scrollContent)

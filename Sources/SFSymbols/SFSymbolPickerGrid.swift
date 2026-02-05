@@ -6,6 +6,14 @@ public struct SFSymbolPickerGrid: View {
         public let preferredItemSize: CGSize
         public let itemSpacing: CGFloat
 
+        static var modal: Self {
+            #if os(iOS)
+            Self(edgePadding: 27)
+            #else
+            Self(edgePadding: 14)
+            #endif
+        }
+
         #if os(iOS)
         public init(
             edgePadding: CGFloat = 0,
@@ -34,7 +42,6 @@ public struct SFSymbolPickerGrid: View {
     private let categoryFilter: SFSymbolCategoryFilter
     private let searchText: String
     private let configuration: Configuration
-
     @State private var currentSymbols: [SFSymbol] = []
     @State private var searchTask: Task<Void, Never>?
     private var showSearchResults: Bool {

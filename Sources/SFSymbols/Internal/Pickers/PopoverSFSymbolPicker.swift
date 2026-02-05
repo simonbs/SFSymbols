@@ -16,12 +16,19 @@ struct PopoverSFSymbolPicker: View {
                 }
                 .padding([.horizontal, .top], 12)
                 Divider()
+                #if os(macOS)
+                    .padding(.top, 9)
+                #endif
                 SFSymbolPickerGrid(
                     selection: $selection,
                     symbols: symbols.symbols,
                     categoryFilter: categoryFilter,
-                    searchText: searchText
+                    searchText: searchText,
+                    configuration: .modal
                 )
+                #if os(macOS)
+                .contentMargins(.top, 8, for: .scrollContent)
+                #endif
                 .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: searchText.normalizedForSearch.isEmpty) {
                     SFSymbolCategoryFilterPicker(
                         categories: symbols.categories.displayable,

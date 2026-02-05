@@ -8,26 +8,34 @@ struct SFSymbolsLoader<Content: View>: View {
 
     var body: some View {
         Group {
-            if let symbols {
-                content(symbols)
-            } else if let loadError {
+            if let loadError {
                 ContentUnavailableView(
                     "Could not load symbols",
                     systemImage: "exclamationmark.triangle.fill",
                     description: Text(loadError.localizedDescription)
                 )
             } else {
-                ContentUnavailableView {
-                    ZStack {
-                        // Add a hidden SF Symbol to ensure we can load the CoreGlyphs bundle.
-                        Image(systemName: "tortoise")
-                            .opacity(0)
-                        ProgressView()
-                            .scaleEffect(2)
+                ZStack {
+                    content(symbols ?? .placeholder)
+                        .opacity(symbols == nil ? 0 : 1)
+                    if symbols == nil {
+                        ContentUnavailableView {
+                            ZStack {
+                                // Add a hidden SF Symbol to ensure we can load the CoreGlyphs bundle.
+                                Image(systemName: "tortoise")
+                                    .opacity(0)
+                                ProgressView()
+                                    #if os(iOS)
+                                    .scaleEffect(2)
+                                    #elseif os(macOS)
+                                    .padding()
+                                    #endif
+                            }
+                        } description: {
+                            Text("Loading...")
+                                .padding(.top)
+                        }
                     }
-                } description: {
-                    Text("Loading...")
-                        .padding(.top)
                 }
             }
         }

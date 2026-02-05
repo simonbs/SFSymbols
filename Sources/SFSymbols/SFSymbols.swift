@@ -5,6 +5,10 @@ public struct SFSymbols: Sendable {
     public let symbols: [SFSymbol]
     public let categories: [SFSymbolCategory]
 
+    static var placeholder: Self {
+        Self(symbols: [], categories: [])
+    }
+
     private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SFSymbols")
 
     public init() async throws {
@@ -25,6 +29,11 @@ public struct SFSymbols: Sendable {
             Self.logger.error("Could not load SF Symbols: \(error, privacy: .public)")
             throw error
         }
+    }
+
+    private init(symbols: [SFSymbol], categories: [SFSymbolCategory]) {
+        self.symbols = symbols
+        self.categories = categories
     }
 }
 
