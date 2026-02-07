@@ -4,7 +4,7 @@ import SwiftUI
 struct EmbeddedPickerDemoView: View {
     @State private var folderTitle = ""
     @State private var selectedSFSymbol = "folder"
-    @State private var searchText = ""
+    searchText    @State private var searchText = ""
     @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbols: SFSymbols?
     @State private var loadError: Error?
@@ -104,6 +104,12 @@ struct EmbeddedPickerDemoView: View {
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
+        .onChange(of: searchText) { _, newValue in
+            let isEmpty = newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            if !isEmpty && categoryFilter != .all {
+                categoryFilter = .all
+            }
+        }
         .task {
             do {
                 symbols = try await SFSymbols()
