@@ -101,7 +101,7 @@ struct EmbeddedPickerDemoView: View {
                 .ignoresSafeArea()
         }
         .navigationTitle("Embedded Picker")
-        #if #if canImport(UIKit)
+        #if canImport(UIKit)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .onChange(of: searchText) { _, newValue in
