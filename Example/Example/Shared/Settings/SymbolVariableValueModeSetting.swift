@@ -34,7 +34,7 @@ extension SymbolVariableValueMode {
 extension View {
     @ViewBuilder
     func backportedSFSymbolPickerVariableValueMode(_ setting: SymbolVariableValueModeSetting) -> some View {
-        if #available(iOS 26, macOS 26, *) {
+        if #available(iOS 26, visionOS 26, macOS 26, *) {
             sfSymbolPickerVariableValueMode(SymbolVariableValueMode(setting))
         } else {
             self

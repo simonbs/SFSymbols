@@ -101,7 +101,7 @@ struct EmbeddedPickerDemoView: View {
                 .ignoresSafeArea()
         }
         .navigationTitle("Embedded Picker")
-        #if os(iOS)
+        #if #if canImport(UIKit)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .onChange(of: searchText) { _, newValue in
@@ -153,8 +153,8 @@ private struct SearchField: View {
 
 private struct SearchFieldBackgroundViewModifier: ViewModifier {
     func body(content: Content) -> some View {
-        if #available(iOS 26, macOS 26, *) {
-            #if os(iOS)
+        if #available(iOS 26, visionOS 26, macOS 26, *) {
+            #if canImport(UIKit)
             content.glassEffect(.regular.tint(Color(uiColor: .secondarySystemBackground)), in: Capsule())
             #elseif os(macOS)
             content.glassEffect(.regular.tint(Color(nsColor: .controlBackgroundColor)), in: Capsule())

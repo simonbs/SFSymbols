@@ -7,14 +7,14 @@ public struct SFSymbolPickerGrid: View {
         public let itemSpacing: CGFloat
 
         static var modal: Self {
-            #if os(iOS)
+            #if canImport(UIKit)
             Self(edgePadding: 27)
             #else
             Self(edgePadding: 14)
             #endif
         }
 
-        #if os(iOS)
+        #if canImport(UIKit)
         public init(
             edgePadding: CGFloat = 0,
             preferredItemSize: CGSize = CGSize(width: 57, height: 45),
@@ -79,8 +79,18 @@ public struct SFSymbolPickerGrid: View {
         self.searchText = searchText
         self.configuration = configuration
     }
-
+    
     public var body: some View {
+        if #available(visionOS 26, *) {
+            internalBody
+                .sensoryFeedback(.selection, trigger: selection)
+        } else {
+            internalBody
+        }
+    }
+
+    @ViewBuilder
+    private var internalBody: some View {
         ZStack {
             if showSearchResults && currentSymbols.isEmpty {
                 ContentUnavailableView(
@@ -126,7 +136,6 @@ public struct SFSymbolPickerGrid: View {
         .onChange(of: symbols) { _, _ in
             updateCurrentResults()
         }
-        .sensoryFeedback(.selection, trigger: selection)
     }
 }
 

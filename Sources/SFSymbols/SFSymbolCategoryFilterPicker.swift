@@ -16,8 +16,18 @@ public struct SFSymbolCategoryFilterPicker: View {
         self.categories = categories
         self._selection = selection
     }
-
+    
     public var body: some View {
+        if #available(visionOS 26, *) {
+            internalBody
+                .sensoryFeedback(.selection, trigger: selection)
+        } else {
+            internalBody
+        }
+    }
+
+    @ViewBuilder
+    private var internalBody: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 HStack(spacing: 0) {
@@ -66,7 +76,7 @@ public struct SFSymbolCategoryFilterPicker: View {
             #if os(visionOS)
             RegularBackgroundView()
             #else
-            if #available(iOS 26, macOS 26, watchOS 26, *) {
+            if #available(iOS 26, visionOS 26, macOS 26, watchOS 26, *) {
                 GlassEffectBackgroundView()
             } else {
                 RegularBackgroundView()
@@ -76,7 +86,6 @@ public struct SFSymbolCategoryFilterPicker: View {
         #if os(macOS)
         .shadow(color: .black.opacity(0.1), radius: 6, y: 2)
         #endif
-        .sensoryFeedback(.selection, trigger: selection)
     }
 }
 

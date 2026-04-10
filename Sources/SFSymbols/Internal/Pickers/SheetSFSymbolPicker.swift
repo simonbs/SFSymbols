@@ -34,14 +34,14 @@ struct SheetSFSymbolPicker: View {
             .navigationTitle("Symbols")
             .searchable(text: $searchText, prompt: Text("Search Symbols"))
             .foregroundStyle(Color.primary)
-            #if os(iOS)
+            #if canImport(UIKit)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         SettingsMenu(symbolBackgroundSetting: $symbolBackgroundSetting)
                     }
                     ToolbarItem(placement: .topBarTrailing) {
-                        if #available(iOS 26, *) {
+                        if #available(iOS 26, visionOS 26, *) {
                             Button(role: .close) {
                                 dismiss()
                             }

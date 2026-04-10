@@ -25,7 +25,7 @@ struct SFSymbolsLoader<Content: View>: View {
                                 Image(systemName: "tortoise")
                                     .opacity(0)
                                 ProgressView()
-                                    #if os(iOS)
+                                    #if canImport(UIKit)
                                     .scaleEffect(2)
                                     #elseif os(macOS)
                                     .padding()

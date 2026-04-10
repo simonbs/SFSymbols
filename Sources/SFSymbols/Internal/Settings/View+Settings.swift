@@ -3,7 +3,7 @@ import SwiftUI
 extension View {
     @ViewBuilder
     func symbolColorRenderingModeSetting(_ setting: SymbolColorRenderingModeSetting) -> some View {
-        if #available(iOS 26, macOS 26, *) {
+        if #available(iOS 26, visionOS 26, macOS 26, *) {
             switch setting {
             case .flat:
                 symbolColorRenderingMode(.flat)
@@ -28,7 +28,7 @@ extension View {
 
     @ViewBuilder
     func symbolVariableValueModeSetting(_ setting: SymbolVariableValueModeSetting) -> some View {
-        if #available(iOS 26, macOS 26, *) {
+        if #available(iOS 26, visionOS 26, macOS 26, *) {
             switch setting {
             case .color:
                 symbolVariableValueMode(SymbolVariableValueMode.color)

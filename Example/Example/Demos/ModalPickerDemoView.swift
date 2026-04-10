@@ -62,7 +62,7 @@ struct ModalPickerDemoView: View {
                         Text("Color")
                     }
                 }
-                if #available(iOS 26, macOS 26, *) {
+                if #available(iOS 26, visionOS 26, macOS 26, *) {
                     Toggle(isOn: $isGradientEnabled) {
                         Text("Gradient")
                     }

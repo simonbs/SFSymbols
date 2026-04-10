@@ -53,7 +53,7 @@ private actor CacheStorage {
             try createDirectoryIfNeeded()
             let url = fileURL(for: filename)
             try data.write(to: url, options: .atomic)
-            #if os(iOS)
+            #if canImport(UIKit)
             try FileManager.default.setAttributes(
                 [.protectionKey: FileProtectionType.none],
                 ofItemAtPath: url.path()
@@ -83,7 +83,7 @@ private actor CacheStorage {
         guard !directoryCreated else {
             return
         }
-        #if os(iOS)
+        #if canImport(UIKit)
         try FileManager.default.createDirectory(
             at: directory,
             withIntermediateDirectories: true,

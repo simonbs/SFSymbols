@@ -9,7 +9,7 @@ enum SymbolColorRenderingModeSetting {
 extension View {
     @ViewBuilder
     func backportedSFSymbolPickerColorRenderingMode(_ setting: SymbolColorRenderingModeSetting) -> some View {
-        if #available(iOS 26, macOS 26, *) {
+        if #available(iOS 26, visionOS 26, macOS 26, *) {
             switch setting {
             case .flat:
                 sfSymbolPickerColorRenderingMode(.flat)
