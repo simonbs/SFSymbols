@@ -154,10 +154,12 @@ private struct SearchField: View {
 private struct SearchFieldBackgroundViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26, visionOS 26, macOS 26, *) {
-            #if canImport(UIKit)
-            content.glassEffect(.regular.tint(Color(uiColor: .secondarySystemBackground)), in: Capsule())
+            #if os(visionOS)
+            content.background(Capsule().fill(.background.secondary))
             #elseif os(macOS)
             content.glassEffect(.regular.tint(Color(nsColor: .controlBackgroundColor)), in: Capsule())
+            #elseif canImport(UIKit)
+            content.glassEffect(.regular.tint(Color(uiColor: .secondarySystemBackground)), in: Capsule())
             #else
             content.background(Capsule().fill(.background.secondary))
             #endif
