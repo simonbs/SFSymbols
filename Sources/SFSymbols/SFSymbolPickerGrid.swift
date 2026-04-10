@@ -81,16 +81,6 @@ public struct SFSymbolPickerGrid: View {
     }
     
     public var body: some View {
-        if #available(visionOS 26, *) {
-            internalBody
-                .sensoryFeedback(.selection, trigger: selection)
-        } else {
-            internalBody
-        }
-    }
-
-    @ViewBuilder
-    private var internalBody: some View {
         ZStack {
             if showSearchResults && currentSymbols.isEmpty {
                 ContentUnavailableView(
@@ -136,6 +126,7 @@ public struct SFSymbolPickerGrid: View {
         .onChange(of: symbols) { _, _ in
             updateCurrentResults()
         }
+        .selectionSensoryFeedback(trigger: selection)
     }
 }
 
