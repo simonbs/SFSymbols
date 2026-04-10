@@ -16,7 +16,7 @@ struct PopoverSFSymbolPicker: View {
                 }
                 .padding([.horizontal, .top], 12)
                 Divider()
-                #if os(macOS)
+                #if os(macOS) || os(visionOS)
                     .padding(.top, 9)
                 #endif
                 SFSymbolPickerGrid(
@@ -26,7 +26,7 @@ struct PopoverSFSymbolPicker: View {
                     searchText: searchText,
                     configuration: .modal
                 )
-                #if os(macOS)
+                #if os(macOS) || os(visionOS)
                 .contentMargins(.top, 8, for: .scrollContent)
                 #endif
                 .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: searchText.normalizedForSearch.isEmpty) {
