@@ -12,7 +12,9 @@ struct PopoverSFSymbolPicker: View {
             VStack(spacing: 0) {
                 HStack(spacing: 10) {
                     SearchField(searchText: $searchText)
+                    #if !os(visionOS)
                     SettingsMenu(symbolBackgroundSetting: $symbolBackgroundSetting)
+                    #endif
                 }
                 .padding([.horizontal, .top], 12)
                 Divider()
