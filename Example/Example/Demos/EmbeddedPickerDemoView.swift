@@ -4,7 +4,7 @@ import SwiftUI
 struct EmbeddedPickerDemoView: View {
     @State private var folderTitle = ""
     @State private var selectedSFSymbol = "folder"
-    searchText    @State private var searchText = ""
+    @State private var searchText = ""
     @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbols: SFSymbols?
     @State private var loadError: Error?
