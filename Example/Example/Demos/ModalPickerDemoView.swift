@@ -12,11 +12,16 @@ struct ModalPickerDemoView: View {
     @State private var variableValue: Double = 100
     @State private var previewUsesRenderingMode = false
     @State private var previewUsesVariableValue = false
+    @State private var usesSuggestedSymbols = true
+    private let suggestedSymbols = ["heart", "star", "bell", "bookmark", "tag", "folder", "person", "gearshape"]
+    private var activeSuggestedSymbols: [String] {
+        usesSuggestedSymbols ? suggestedSymbols : []
+    }
 
     var body: some View {
         Form {
             Section {
-                SFSymbolPicker("Symbol", selection: $selectedSFSymbol)
+                SFSymbolPicker("Symbol", selection: $selectedSFSymbol, suggestedSymbols: activeSuggestedSymbols)
                     #if os(visionOS)
                     .tint(.primary)
                     #endif
@@ -102,6 +107,7 @@ struct ModalPickerDemoView: View {
                 .padding(.vertical)
             #endif
             Section {
+                Toggle("Suggested Symbols", isOn: $usesSuggestedSymbols)
                 Toggle("Preview Uses Rendering Mode", isOn: $previewUsesRenderingMode)
                 Toggle("Preview Uses Variable Value", isOn: $previewUsesVariableValue)
             }

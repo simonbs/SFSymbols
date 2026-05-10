@@ -14,6 +14,12 @@ public enum SFSymbolCategoryFilter: Identifiable, Hashable, Sendable {
     }
 }
 
+public extension SFSymbolCategoryFilter {
+    static var suggested: Self {
+        .category(.suggested)
+    }
+}
+
 extension SFSymbolCategoryFilter {
     var image: Image {
         switch self {

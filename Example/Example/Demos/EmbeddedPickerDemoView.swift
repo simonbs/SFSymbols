@@ -5,11 +5,16 @@ struct EmbeddedPickerDemoView: View {
     @State private var folderTitle = ""
     @State private var selectedSFSymbol = "folder"
     @State private var searchText = ""
-    @State private var categoryFilter: SFSymbolCategoryFilter = .all
+    @State private var categoryFilter: SFSymbolCategoryFilter = .suggested
+    @State private var usesSuggestedSymbols = true
     @State private var symbols: SFSymbols?
     @State private var loadError: Error?
     @State private var searchTextFieldHeight: CGFloat = 0
     @State private var categoryFilterHeight: CGFloat = 0
+    private let suggestedSymbols = ["folder", "tray.full", "archivebox", "doc", "tag", "paperclip", "calendar", "bell"]
+    private var activeSuggestedSymbols: [String] {
+        usesSuggestedSymbols ? suggestedSymbols : []
+    }
     private var showsCategoryFilter: Bool {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -35,12 +40,14 @@ struct EmbeddedPickerDemoView: View {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .fill(.background)
                 )
+            Toggle("Suggested Symbols", isOn: $usesSuggestedSymbols)
             ZStack {
                 if let symbols {
                     VStack(spacing: 0) {
                         SFSymbolPickerGrid(
                             selection: $selectedSFSymbol,
                             symbols: symbols.symbols,
+                            suggestedSymbols: activeSuggestedSymbols,
                             categoryFilter: categoryFilter,
                             searchText: searchText
                         )
@@ -68,6 +75,7 @@ struct EmbeddedPickerDemoView: View {
                 if showsCategoryFilter, let symbols {
                     SFSymbolCategoryFilterPicker(
                         categories: symbols.categories.displayable,
+                        suggestedSymbols: activeSuggestedSymbols,
                         selection: $categoryFilter
                     )
                     .onGeometryChange(for: CGFloat.self) { proxy in
@@ -104,6 +112,9 @@ struct EmbeddedPickerDemoView: View {
             if !isEmpty && categoryFilter != .all {
                 categoryFilter = .all
             }
+        }
+        .onChange(of: usesSuggestedSymbols) { _, newValue in
+            categoryFilter = newValue ? .suggested : .all
         }
         .task {
             do {

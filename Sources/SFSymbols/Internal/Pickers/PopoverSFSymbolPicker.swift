@@ -2,10 +2,16 @@ import SwiftUI
 
 struct PopoverSFSymbolPicker: View {
     @Binding var selection: String?
+    let suggestedSymbols: [String]
 
     @State private var searchText = ""
-    @State private var categoryFilter: SFSymbolCategoryFilter = .all
+    @State private var categoryFilter: SFSymbolCategoryFilter?
     @State private var symbolBackgroundSetting: SymbolBackgroundSetting = .default
+
+    init(selection: Binding<String?>, suggestedSymbols: [String] = []) {
+        self._selection = selection
+        self.suggestedSymbols = suggestedSymbols
+    }
 
     var body: some View {
         SFSymbolsLoader { symbols in
@@ -24,7 +30,8 @@ struct PopoverSFSymbolPicker: View {
                 SFSymbolPickerGrid(
                     selection: $selection,
                     symbols: symbols.symbols,
-                    categoryFilter: categoryFilter,
+                    suggestedSymbols: suggestedSymbols,
+                    categoryFilter: selectedCategoryFilter,
                     searchText: searchText,
                     configuration: .modal
                 )
@@ -34,7 +41,8 @@ struct PopoverSFSymbolPicker: View {
                 .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: searchText.normalizedForSearch.isEmpty) {
                     SFSymbolCategoryFilterPicker(
                         categories: symbols.categories.displayable,
-                        selection: $categoryFilter
+                        suggestedSymbols: suggestedSymbols,
+                        selection: categoryFilterSelection
                     )
                     .transition(.opacity.animation(.linear(duration: 0.1)))
                 })
@@ -42,6 +50,26 @@ struct PopoverSFSymbolPicker: View {
             }
             .frame(width: 360, height: 500)
             .foregroundStyle(Color.primary)
+        }
+    }
+}
+
+private extension PopoverSFSymbolPicker {
+    private var selectedCategoryFilter: SFSymbolCategoryFilter {
+        guard let categoryFilter else {
+            return suggestedSymbols.isEmpty ? .all : .suggested
+        }
+        if categoryFilter == .suggested && suggestedSymbols.isEmpty {
+            return .all
+        }
+        return categoryFilter
+    }
+
+    private var categoryFilterSelection: Binding<SFSymbolCategoryFilter> {
+        Binding {
+            selectedCategoryFilter
+        } set: { newValue in
+            categoryFilter = newValue
         }
     }
 }

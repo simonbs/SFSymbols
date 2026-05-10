@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct SFSymbolPicker: View {
     private let titleResource: LocalizedStringResource
+    private let suggestedSymbols: [String]
     @Binding private var selection: String?
     @State private var isPresented = false
     @Environment(\.symbolPickerPreviewUsesRenderingMode) private var previewUsesRenderingMode
@@ -11,17 +12,21 @@ public struct SFSymbolPicker: View {
 
     public init(
         _ titleResource: LocalizedStringResource,
-        selection: Binding<String?>
+        selection: Binding<String?>,
+        suggestedSymbols: [String] = []
     ) {
         self.titleResource = titleResource
+        self.suggestedSymbols = suggestedSymbols
         self._selection = selection
     }
 
     public init(
         _ titleResource: LocalizedStringResource,
-        selection: Binding<String>
+        selection: Binding<String>,
+        suggestedSymbols: [String] = []
     ) {
         self.titleResource = titleResource
+        self.suggestedSymbols = suggestedSymbols
         self._selection = Binding {
             selection.wrappedValue
         } set: { newValue in
@@ -68,7 +73,8 @@ public struct SFSymbolPicker: View {
         }
         .sfSymbolPicker(
             isPresented: $isPresented,
-            selection: $selection
+            selection: $selection,
+            suggestedSymbols: suggestedSymbols
         )
     }
 }

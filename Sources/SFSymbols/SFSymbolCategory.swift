@@ -36,3 +36,13 @@ public extension Array where Element == SFSymbolCategory {
         return result
     }
 }
+
+extension SFSymbolCategory {
+    static var suggested: Self {
+        Self(
+            key: "suggested",
+            icon: SFSymbol(name: "sparkles", searchTerms: [], categories: []),
+            symbols: []
+        )
+    }
+}

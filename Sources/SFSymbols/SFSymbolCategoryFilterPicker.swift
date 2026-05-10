@@ -2,21 +2,24 @@ import SwiftUI
 
 public struct SFSymbolCategoryFilterPicker: View {
     private let categories: [SFSymbolCategory]
+    private let suggestedSymbols: [String]
     @Binding private var selection: SFSymbolCategoryFilter
 
     @State private var didScrollToSelection = false
     private var filters: [SFSymbolCategoryFilter] {
-        [.all] + categories.map { .category($0) }
+        (suggestedSymbols.isEmpty ? [] : [.suggested]) + [.all] + categories.map { .category($0) }
     }
 
     public init(
         categories: [SFSymbolCategory],
+        suggestedSymbols: [String] = [],
         selection: Binding<SFSymbolCategoryFilter>
     ) {
         self.categories = categories
+        self.suggestedSymbols = suggestedSymbols
         self._selection = selection
     }
-    
+
     public var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {

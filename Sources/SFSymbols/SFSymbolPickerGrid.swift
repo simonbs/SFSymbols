@@ -39,7 +39,8 @@ public struct SFSymbolPickerGrid: View {
 
     @Binding private var selection: String?
     private let symbols: [SFSymbol]
-    private let categoryFilter: SFSymbolCategoryFilter
+    private let suggestedSymbols: [String]
+    private let categoryFilter: SFSymbolCategoryFilter?
     private let searchText: String
     private let configuration: Configuration
     @State private var currentSymbols: [SFSymbol] = []
@@ -51,12 +52,14 @@ public struct SFSymbolPickerGrid: View {
     public init(
         selection: Binding<String?>,
         symbols: [SFSymbol],
-        categoryFilter: SFSymbolCategoryFilter = .all,
+        suggestedSymbols: [String] = [],
+        categoryFilter: SFSymbolCategoryFilter? = nil,
         searchText: String = "",
         configuration: Configuration = Configuration()
     ) {
         self._selection = selection
         self.symbols = symbols
+        self.suggestedSymbols = suggestedSymbols
         self.categoryFilter = categoryFilter
         self.searchText = searchText
         self.configuration = configuration
@@ -65,7 +68,8 @@ public struct SFSymbolPickerGrid: View {
     public init(
         selection: Binding<String>,
         symbols: [SFSymbol],
-        categoryFilter: SFSymbolCategoryFilter = .all,
+        suggestedSymbols: [String] = [],
+        categoryFilter: SFSymbolCategoryFilter? = nil,
         searchText: String = "",
         configuration: Configuration = Configuration()
     ) {
@@ -75,11 +79,12 @@ public struct SFSymbolPickerGrid: View {
             selection.wrappedValue = newValue ?? selection.wrappedValue
         }
         self.symbols = symbols
+        self.suggestedSymbols = suggestedSymbols
         self.categoryFilter = categoryFilter
         self.searchText = searchText
         self.configuration = configuration
     }
-    
+
     public var body: some View {
         ZStack {
             if showSearchResults && currentSymbols.isEmpty {
@@ -123,6 +128,9 @@ public struct SFSymbolPickerGrid: View {
         .onChange(of: categoryFilter) { _, _ in
             updateCurrentResults()
         }
+        .onChange(of: suggestedSymbols) { _, _ in
+            updateCurrentResults()
+        }
         .onChange(of: symbols) { _, _ in
             updateCurrentResults()
         }
@@ -131,10 +139,21 @@ public struct SFSymbolPickerGrid: View {
 }
 
 private extension SFSymbolPickerGrid {
+    private var resolvedCategoryFilter: SFSymbolCategoryFilter {
+        guard let categoryFilter else {
+            return suggestedSymbols.isEmpty ? .all : .suggested
+        }
+        if categoryFilter == .suggested && suggestedSymbols.isEmpty {
+            return .all
+        }
+        return categoryFilter
+    }
+
     private func updateCurrentResults(oldSearchText: String = "") {
         searchTask?.cancel()
         let oldNormalizedSearchText = oldSearchText.normalizedForSearch
         let normalizedSearchText = searchText.normalizedForSearch
+        let categoryFilter = resolvedCategoryFilter
         let symbolsToFilter = if !oldSearchText.isEmpty, normalizedSearchText.hasPrefix(oldNormalizedSearchText) {
             currentSymbols
         } else {
@@ -143,11 +162,15 @@ private extension SFSymbolPickerGrid {
         searchTask = Task.detached(
             name: "SFSymbolPicker Filter",
             priority: .userInitiated
-        ) { [normalizedSearchText, categoryFilter, symbolsToFilter] in
+        ) { [normalizedSearchText, categoryFilter, suggestedSymbols, symbolsToFilter] in
             guard !Task.isCancelled else {
                 return
             }
-            let resultSymbols = symbolsToFilter.filtered(using: categoryFilter, searchText: normalizedSearchText)
+            let resultSymbols = symbolsToFilter.filtered(
+                using: categoryFilter,
+                suggestedSymbols: suggestedSymbols,
+                searchText: normalizedSearchText
+            )
             guard !Task.isCancelled else {
                 return
             }
@@ -155,7 +178,10 @@ private extension SFSymbolPickerGrid {
                 guard self.searchText.normalizedForSearch == normalizedSearchText else {
                     return
                 }
-                guard self.categoryFilter == categoryFilter else {
+                guard self.resolvedCategoryFilter == categoryFilter else {
+                    return
+                }
+                guard self.suggestedSymbols == suggestedSymbols else {
                     return
                 }
                 self.currentSymbols = resultSymbols
@@ -165,11 +191,18 @@ private extension SFSymbolPickerGrid {
 }
 
 private extension Array where Element == SFSymbol {
-    func filtered(using categoryFilter: SFSymbolCategoryFilter, searchText: String) -> [Element] {
+    func filtered(
+        using categoryFilter: SFSymbolCategoryFilter,
+        suggestedSymbols: [String],
+        searchText: String
+    ) -> [Element] {
         let categoryFilteredSymbols: [Element]
         switch categoryFilter {
         case .all:
             categoryFilteredSymbols = self
+        case .category(let category) where category == .suggested:
+            let symbolMap = Dictionary(uniqueKeysWithValues: map { ($0.name, $0) })
+            categoryFilteredSymbols = suggestedSymbols.compactMap { symbolMap[$0] }
         case .category(let category):
             categoryFilteredSymbols = filter { $0.categories.contains(category.key) }
         }
