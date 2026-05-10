@@ -153,6 +153,7 @@ with the provided view modifiers.
 SFSymbolPicker("Symbol", selection: $selectedSymbol)
     .sfSymbolPickerRenderingMode(.hierarchical)
     .sfSymbolPickerForegroundStyle(.primary, .blue, .secondary)
+    .sfSymbolPickerSelectionColor(.orange)
     .sfSymbolPickerVariableValue(0.6)
     .sfSymbolPickerVariableValueMode(.color)
     .sfSymbolPickerPreviewUsesRenderingMode(true)
@@ -166,6 +167,7 @@ Available settings:
 - `.sfSymbolPickerColorRenderingMode(_:)` specifies whether the symbols are rendered with gradient colors.
   Available on iOS 26 and macOS 26. Supported values: `.flat` and `.gradient`.
 - `.sfSymbolPickerForegroundStyle(...)` sets primary, secondary, and tertiary color applied to symbols.
+- `.sfSymbolPickerSelectionColor(_:)` sets the selection color. Default is `.blue`.
 - `.sfSymbolPickerVariableValue(_:)` sets the variable value for variable symbols. Default is `1`.
 - `.sfSymbolPickerVariableValueMode(_:)` selects whether the variable value affects draw or color.
   Available on iOS 26 and macOS 26. Supported values: `.draw` and `.color`. Default is `.color`.

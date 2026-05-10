@@ -7,6 +7,7 @@ struct ModalPickerDemoView: View {
     @State private var primaryColor: Color = .primary
     @State private var secondaryColor: Color = .blue
     @State private var tertiaryColor: Color = .gray
+    @State private var selectionColor: Color = .blue
     @State private var isGradientEnabled = false
     @State private var variableValueMode: SymbolVariableValueModeSetting = .draw
     @State private var variableValue: Double = 100
@@ -23,6 +24,7 @@ struct ModalPickerDemoView: View {
                     .sfSymbolPickerRenderingMode(SymbolRenderingMode(renderingMode))
                     .backportedSFSymbolPickerColorRenderingMode(isGradientEnabled ? .gradient : .flat)
                     .sfSymbolPickerForegroundStyle(primaryColor, secondaryColor, tertiaryColor)
+                    .sfSymbolPickerSelectionColor(selectionColor)
                     .sfSymbolPickerVariableValue(variableValue / 100)
                     .backportedSFSymbolPickerVariableValueMode(variableValueMode)
                     .sfSymbolPickerPreviewUsesRenderingMode(previewUsesRenderingMode)
@@ -52,15 +54,21 @@ struct ModalPickerDemoView: View {
                                 .labelsHidden()
                         }
                     } else {
-                        ColorPicker("Color", selection: $primaryColor)
+                        ColorPicker("Symbol Color", selection: $primaryColor)
                             .labelsHidden()
                     }
                 } label: {
                     if renderingMode == .palette {
-                        Text("Colors")
+                        Text("Symbol Colors")
                     } else {
-                        Text("Color")
+                        Text("Symbol Color")
                     }
+                }
+                LabeledContent {
+                    ColorPicker("Selection Color", selection: $selectionColor)
+                        .labelsHidden()
+                } label: {
+                    Text("Selection Color")
                 }
                 if #available(iOS 26, visionOS 26, macOS 26, *) {
                     Toggle(isOn: $isGradientEnabled) {

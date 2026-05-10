@@ -8,6 +8,7 @@ struct SFSymbolTile: View {
     @Environment(\.displayScale) private var displayScale
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.symbolBackgroundSetting) private var symbolBackgroundSetting
+    @Environment(\.symbolPickerSelectionColor) private var selectionColor
     @Environment(\.symbolPickerVariableValue) private var variableValue
     @Environment(\.symbolPickerVariableValueModeSetting) private var variableValueModeSetting
     private var cornerRadius: CGFloat {
@@ -35,7 +36,7 @@ struct SFSymbolTile: View {
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(
-                        isSelected ? AnyShapeStyle(Color.blue) : AnyShapeStyle(.separator),
+                        isSelected ? AnyShapeStyle(selectionColor) : AnyShapeStyle(.separator),
                         lineWidth: isSelected ? 2 : 1 / displayScale
                     )
             }

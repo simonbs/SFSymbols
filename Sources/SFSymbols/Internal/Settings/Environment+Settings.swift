@@ -17,6 +17,11 @@ private struct SymbolBackgroundSettingEnvironmentKey: EnvironmentKey {
     static let defaultValue: SymbolBackgroundSetting = .default
 }
 
+// swiftlint:disable:next type_name
+private struct SymbolPickerSelectionColorEnvironmentKey: EnvironmentKey {
+    static let defaultValue: Color = .blue
+}
+
 private struct SymbolPickerVariableValueEnvironmentKey: EnvironmentKey {
     static let defaultValue: Double = 1
 }
@@ -55,6 +60,11 @@ extension EnvironmentValues {
     var symbolBackgroundSetting: SymbolBackgroundSetting {
         get { self[SymbolBackgroundSettingEnvironmentKey.self] }
         set { self[SymbolBackgroundSettingEnvironmentKey.self] = newValue }
+    }
+
+    var symbolPickerSelectionColor: Color {
+        get { self[SymbolPickerSelectionColorEnvironmentKey.self] }
+        set { self[SymbolPickerSelectionColorEnvironmentKey.self] = newValue }
     }
 
     var symbolPickerVariableValue: Double {

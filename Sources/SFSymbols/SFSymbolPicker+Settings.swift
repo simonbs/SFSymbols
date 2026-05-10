@@ -40,6 +40,11 @@ public extension View {
     }
 
     @ViewBuilder
+    func sfSymbolPickerSelectionColor(_ color: Color) -> some View {
+        environment(\.symbolPickerSelectionColor, color)
+    }
+
+    @ViewBuilder
     func sfSymbolPickerVariableValue(_ value: Double) -> some View {
         environment(\.symbolPickerVariableValue, value)
     }
