@@ -65,4 +65,9 @@ public extension View {
     func sfSymbolPickerPreviewUsesVariableValue(_ isEnabled: Bool) -> some View {
         environment(\.symbolPickerPreviewUsesVariableValue, isEnabled)
     }
+
+    @ViewBuilder
+    func sfSymbolPickerShowsSettingsMenu(_ isEnabled: Bool) -> some View {
+        environment(\.symbolPickerShowsSettingsMenu, isEnabled)
+    }
 }

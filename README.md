@@ -157,6 +157,7 @@ SFSymbolPicker("Symbol", selection: $selectedSymbol)
     .sfSymbolPickerVariableValueMode(.color)
     .sfSymbolPickerPreviewUsesRenderingMode(true)
     .sfSymbolPickerPreviewUsesVariableValue(true)
+    .sfSymbolPickerShowsSettingsMenu(false)
 ```
 
 Available settings:
@@ -173,6 +174,7 @@ Available settings:
   settings are applied to the preview inside `SFSymbolPicker`. Default is `false`.
 - `.sfSymbolPickerPreviewUsesVariableValue(_:)` defines whether the same variable value
   settings are applied to the preview inside `SFSymbolPicker`. Default is `false`.
+- `.sfSymbolPickerShowsSettingsMenu(_:)` defines whether the picker shows its settings menu. Default is `true`.
 
 ### Load and Browse Symbols With SFSymbols
 
