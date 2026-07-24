@@ -105,6 +105,9 @@ public struct SFSymbolPickerGrid: View {
                                 .id("top")
                         }
                     }
+                    #if os(iOS)
+                    .modifier(TopContentMarginForIOS27(margin: configuration.edgePadding))
+                    #endif
                     .onChange(of: currentSymbols) { _, _ in
                         proxy.scrollTo("top", anchor: .top)
                     }
@@ -129,6 +132,22 @@ public struct SFSymbolPickerGrid: View {
         .selectionSensoryFeedback(trigger: selection)
     }
 }
+
+#if os(iOS)
+private struct TopContentMarginForIOS27: ViewModifier {
+    let margin: CGFloat
+    @Environment(\.isSearching) private var isSearching
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 27, *) {
+            content.contentMargins(.top, isSearching ? margin : 0, for: .scrollContent)
+        } else {
+            content
+        }
+    }
+}
+#endif
 
 private extension SFSymbolPickerGrid {
     private func updateCurrentResults(oldSearchText: String = "") {
