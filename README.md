@@ -59,16 +59,18 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedSymbol = "tortoise"
+    private let suggestedSymbols = ["tortoise", "hare", "pawprint", "leaf", "heart"]
 
     var body: some View {
         Form {
-            SFSymbolPicker("Symbol", selection: $selectedSymbol)
+            SFSymbolPicker("Symbol", selection: $selectedSymbol, suggestedSymbols: suggestedSymbols)
         }
     }
 }
 ```
 
 `SFSymbolPicker` accepts both optional and non-optional bindings. Optional bindings let you clear the selection.
+When `suggestedSymbols` is non-empty, the picker starts on a Suggested category before All.
 
 ### Use SFSymbolPickerGrid (Embedded)
 
@@ -86,8 +88,9 @@ struct ContentView: View {
     @State private var title = ""
     @State private var selectedSymbol = "folder"
     @State private var searchText = ""
-    @State private var categoryFilter: SFSymbolCategoryFilter = .all
+    @State private var categoryFilter: SFSymbolCategoryFilter = .suggested
     @State private var symbols: SFSymbols?
+    private let suggestedSymbols = ["folder", "tray.full", "archivebox", "doc", "tag"]
     private let gridConfiguration = SFSymbolPickerGrid.Configuration(edgePadding: 16)
 
     var body: some View {
@@ -97,11 +100,13 @@ struct ContentView: View {
             if let symbols {
                 SFSymbolCategoryFilterPicker(
                     categories: symbols.categories.displayable,
+                    suggestedSymbols: suggestedSymbols,
                     selection: $categoryFilter
                 )
                 SFSymbolPickerGrid(
                     selection: $selectedSymbol,
                     symbols: symbols.symbols,
+                    suggestedSymbols: suggestedSymbols,
                     categoryFilter: categoryFilter,
                     searchText: searchText,
                     configuration: gridConfiguration
@@ -136,12 +141,17 @@ struct ContentView: View {
         } label: {
             Label("Pick a Symbol", systemImage: selectedSymbol ?? "questionmark")
         }
-        .sfSymbolPicker(isPresented: $isPresented, selection: $selectedSymbol)
+        .sfSymbolPicker(
+            isPresented: $isPresented,
+            selection: $selectedSymbol,
+            suggestedSymbols: ["heart", "star", "bell", "bookmark", "tag"]
+        )
     }
 }
 ```
 
 `.sfSymbolPicker` can be attached to any view, including images, list rows, or custom buttons.
+Pass `suggestedSymbols` to show a Suggested category first, or omit it to start with All.
 
 ### Configure Picker Settings
 

@@ -2,11 +2,17 @@ import SwiftUI
 
 struct SheetSFSymbolPicker: View {
     @Binding var selection: String?
+    let suggestedSymbols: [String]
 
     @Environment(\.dismiss) private var dismiss
     @State private var searchText = ""
-    @State private var categoryFilter: SFSymbolCategoryFilter = .all
+    @State private var categoryFilter: SFSymbolCategoryFilter?
     @State private var symbolBackgroundSetting: SymbolBackgroundSetting = .default
+
+    init(selection: Binding<String?>, suggestedSymbols: [String] = []) {
+        self._selection = selection
+        self.suggestedSymbols = suggestedSymbols
+    }
 
     var body: some View {
         NavigationStack {
@@ -14,7 +20,8 @@ struct SheetSFSymbolPicker: View {
                 SFSymbolPickerGrid(
                     selection: $selection,
                     symbols: symbols.symbols,
-                    categoryFilter: categoryFilter,
+                    suggestedSymbols: suggestedSymbols,
+                    categoryFilter: selectedCategoryFilter,
                     searchText: searchText,
                     configuration: .modal
                 )
@@ -24,7 +31,8 @@ struct SheetSFSymbolPicker: View {
                 .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: searchText.normalizedForSearch.isEmpty) {
                     SFSymbolCategoryFilterPicker(
                         categories: symbols.categories.displayable,
-                        selection: $categoryFilter
+                        suggestedSymbols: suggestedSymbols,
+                        selection: categoryFilterSelection
                     )
                     .transition(.opacity.animation(.linear(duration: 0.1)))
                 })
@@ -61,6 +69,24 @@ struct SheetSFSymbolPicker: View {
 }
 
 private extension SheetSFSymbolPicker {
+    private var selectedCategoryFilter: SFSymbolCategoryFilter {
+        guard let categoryFilter else {
+            return suggestedSymbols.isEmpty ? .all : .suggested
+        }
+        if categoryFilter == .suggested && suggestedSymbols.isEmpty {
+            return .all
+        }
+        return categoryFilter
+    }
+
+    private var categoryFilterSelection: Binding<SFSymbolCategoryFilter> {
+        Binding {
+            selectedCategoryFilter
+        } set: { newValue in
+            categoryFilter = newValue
+        }
+    }
+
     struct BackgroundView: View {
         @Environment(\.colorScheme) private var colorScheme
         private var backgroundStyle: some ShapeStyle {
