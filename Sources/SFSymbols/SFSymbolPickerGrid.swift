@@ -45,7 +45,7 @@ public struct SFSymbolPickerGrid: View {
     @State private var currentSymbols: [SFSymbol] = []
     @State private var searchTask: Task<Void, Never>?
     private var showSearchResults: Bool {
-        !searchText.normalizedForSearch.isEmpty
+        SFSymbols.hasSearchableText(searchText)
     }
 
     public init(
@@ -152,9 +152,7 @@ private struct TopContentMarginForIOS27: ViewModifier {
 private extension SFSymbolPickerGrid {
     private func updateCurrentResults(oldSearchText: String = "") {
         searchTask?.cancel()
-        let oldNormalizedSearchText = oldSearchText.normalizedForSearch
-        let normalizedSearchText = searchText.normalizedForSearch
-        let symbolsToFilter = if !oldSearchText.isEmpty, normalizedSearchText.hasPrefix(oldNormalizedSearchText) {
+        let symbolsToFilter = if SFSymbols.canRefineSearchResults(from: oldSearchText, to: searchText) {
             currentSymbols
         } else {
             symbols
@@ -162,16 +160,16 @@ private extension SFSymbolPickerGrid {
         searchTask = Task.detached(
             name: "SFSymbolPicker Filter",
             priority: .userInitiated
-        ) { [normalizedSearchText, categoryFilter, symbolsToFilter] in
+        ) { [searchText, categoryFilter, symbolsToFilter] in
             guard !Task.isCancelled else {
                 return
             }
-            let resultSymbols = symbolsToFilter.filtered(using: categoryFilter, searchText: normalizedSearchText)
+            let resultSymbols = symbolsToFilter.filtered(using: categoryFilter, searchText: searchText)
             guard !Task.isCancelled else {
                 return
             }
             await MainActor.run {
-                guard self.searchText.normalizedForSearch == normalizedSearchText else {
+                guard self.searchText == searchText else {
                     return
                 }
                 guard self.categoryFilter == categoryFilter else {
@@ -185,19 +183,6 @@ private extension SFSymbolPickerGrid {
 
 private extension Array where Element == SFSymbol {
     func filtered(using categoryFilter: SFSymbolCategoryFilter, searchText: String) -> [Element] {
-        let categoryFilteredSymbols: [Element]
-        switch categoryFilter {
-        case .all:
-            categoryFilteredSymbols = self
-        case .category(let category):
-            categoryFilteredSymbols = filter { $0.categories.contains(category.key) }
-        }
-        guard !searchText.isEmpty else {
-            return categoryFilteredSymbols
-        }
-        return categoryFilteredSymbols.filter { symbol in
-            let terms = [symbol.name] + symbol.searchTerms
-            return terms.contains { $0.localizedCaseInsensitiveContains(searchText) }
-        }
+        search(matching: searchText, categoryFilter: categoryFilter)
     }
 }

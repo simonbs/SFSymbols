@@ -6,6 +6,9 @@ struct PopoverSFSymbolPicker: View {
     @State private var searchText = ""
     @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbolBackgroundSetting: SymbolBackgroundSetting = .default
+    private var showsCategoryFilter: Bool {
+        !SFSymbols.hasSearchableText(searchText)
+    }
 
     var body: some View {
         SFSymbolsLoader { symbols in
@@ -31,7 +34,7 @@ struct PopoverSFSymbolPicker: View {
                 #if os(macOS) || os(visionOS)
                 .contentMargins(.top, 8, for: .scrollContent)
                 #endif
-                .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: searchText.normalizedForSearch.isEmpty) {
+                .modifier(CategoryFilterSafeAreaBarViewModifier(isEnabled: showsCategoryFilter) {
                     SFSymbolCategoryFilterPicker(
                         categories: symbols.categories.displayable,
                         selection: $categoryFilter
