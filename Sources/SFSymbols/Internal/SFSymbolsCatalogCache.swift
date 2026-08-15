@@ -85,35 +85,8 @@ actor SFSymbolsCatalogCache {
                 ofItemAtPath: fileURL.path()
             )
             #endif
-            removeStaleCacheFiles()
         } catch {
             logger.debug("Could not write symbols catalog cache: \(error.localizedDescription, privacy: .public)")
-        }
-    }
-
-    private func removeStaleCacheFiles() {
-        do {
-            let cacheFileURLs = try FileManager.default.contentsOfDirectory(
-                at: directory,
-                includingPropertiesForKeys: nil
-            )
-            let currentFileName = fileURL.lastPathComponent
-            for cacheFileURL in cacheFileURLs {
-                guard cacheFileURL.lastPathComponent != currentFileName else {
-                    continue
-                }
-                guard cacheFileURL.lastPathComponent.hasPrefix("symbols-") else {
-                    continue
-                }
-                guard cacheFileURL.pathExtension == "plist" else {
-                    continue
-                }
-                try FileManager.default.removeItem(at: cacheFileURL)
-            }
-        } catch {
-            logger.debug(
-                "Could not remove stale symbols catalog caches: \(error.localizedDescription, privacy: .public)"
-            )
         }
     }
 
@@ -134,18 +107,7 @@ actor SFSymbolsCatalogCache {
     }
 
     private var fileURL: URL {
-        directory.appendingPathComponent("symbols-\(sanitizedOSVersion)-v\(Self.formatVersion).plist")
-    }
-
-    private var sanitizedOSVersion: String {
-        String(osVersion.map { character in
-            if character.isLetter || character.isNumber || character == "." ||
-                character == "-" || character == "_" {
-                return character
-            } else {
-                return "-"
-            }
-        })
+        directory.appendingPathComponent("symbols.plist")
     }
 
     private static func defaultCacheDirectory() -> URL {

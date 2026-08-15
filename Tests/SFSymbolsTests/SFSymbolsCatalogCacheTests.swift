@@ -66,7 +66,7 @@ final class SFSymbolsCatalogCacheTests: XCTestCase {
         XCTAssertEqual(callCount, 1)
     }
 
-    func testSuccessfulWriteRemovesStaleCatalogCacheFiles() async throws {
+    func testSuccessfulWriteOverwritesSingleCacheFile() async throws {
         let directory = try temporaryCacheDirectory()
         let unrelatedFileURL = directory.appendingPathComponent("metadata.json")
         try Data().write(to: unrelatedFileURL)
@@ -82,11 +82,18 @@ final class SFSymbolsCatalogCacheTests: XCTestCase {
         }
 
         let fileNames = try FileManager.default.contentsOfDirectory(atPath: directory.path())
-        XCTAssertEqual(
-            fileNames.filter { $0.hasPrefix("symbols-") && $0.hasSuffix(".plist") },
-            ["symbols-macOS-26.1.0-v1.plist"]
-        )
+        XCTAssertEqual(fileNames.filter { $0 == "symbols.plist" }, ["symbols.plist"])
         XCTAssertTrue(FileManager.default.fileExists(atPath: unrelatedFileURL.path()))
+
+        let loader = LoaderProbe()
+        let reader = SFSymbolsCatalogCache(directory: directory, osVersion: "macOS-26.1.0")
+        let cachedSymbols = try await reader.symbols {
+            try await loader.load()
+        }
+
+        XCTAssertEqual(cachedSymbols.symbols, Self.symbols(prefix: "current").symbols)
+        let callCount = await loader.numberOfCalls()
+        XCTAssertEqual(callCount, 0)
     }
 }
 
