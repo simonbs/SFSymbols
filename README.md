@@ -212,6 +212,14 @@ let allSymbols = symbols.symbols
 let categories = symbols.categories
 ```
 
+Use `search(matching:)` to search by symbol name and search terms. You can also pass
+a category filter and limit the number of ranked results.
+
+```swift
+let symbols = try await SFSymbols()
+let matches = symbols.search(matching: "folder", categoryFilter: .all, limit: 20)
+```
+
 Each `SFSymbol` includes its `name`, `searchTerms`, and `categories`, so you can build your own search and filtering UI.
 
 ## 📱 Example Project
