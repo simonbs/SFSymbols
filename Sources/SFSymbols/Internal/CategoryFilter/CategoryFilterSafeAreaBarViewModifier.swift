@@ -32,9 +32,3 @@ struct CategoryFilterSafeAreaBarViewModifier<BarContent: View>: ViewModifier {
         }
     }
 }
-
-extension String {
-    var normalizedForSearch: String {
-        trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-    }
-}
