@@ -79,7 +79,7 @@ public struct SFSymbolPickerGrid: View {
         self.searchText = searchText
         self.configuration = configuration
     }
-    
+
     public var body: some View {
         ZStack {
             if showSearchResults && currentSymbols.isEmpty {

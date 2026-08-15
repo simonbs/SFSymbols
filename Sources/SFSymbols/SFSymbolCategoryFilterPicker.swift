@@ -16,7 +16,7 @@ public struct SFSymbolCategoryFilterPicker: View {
         self.categories = categories
         self._selection = selection
     }
-    
+
     public var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {

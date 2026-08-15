@@ -9,9 +9,25 @@ public struct SFSymbols: Sendable {
         Self(symbols: [], categories: [])
     }
 
-    private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SFSymbols")
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "SFSymbols",
+        category: "SFSymbols"
+    )
 
     public init() async throws {
+        self = try await SFSymbolsCatalogCache.shared.symbols {
+            try await Self.loadFromCoreGlyphs()
+        }
+    }
+
+    init(symbols: [SFSymbol], categories: [SFSymbolCategory]) {
+        self.symbols = symbols
+        self.categories = categories
+    }
+}
+
+private extension SFSymbols {
+    private static func loadFromCoreGlyphs() async throws -> Self {
         do {
             let reader = CoreGlyphsPlistReader()
             async let categoriesPlistTask = reader.read(plistNamed: "categories", as: CategoriesPlist.self)
@@ -19,11 +35,13 @@ public struct SFSymbols: Sendable {
             let (categoriesPlist, symbolOrderPlist) = try await (categoriesPlistTask, symbolOrderPlistTask)
             let (symbols, symbolNameMap) = try await Self.symbols(using: reader, categoriesPlist: categoriesPlist)
             let sortedSymbols = Self.sortSymbols(symbols, accordingTo: symbolOrderPlist.names)
-            self.symbols = sortedSymbols
-            self.categories = Self.categories(
-                categoriesPlist: categoriesPlist,
+            return Self(
                 symbols: sortedSymbols,
-                symbolNameMap: symbolNameMap
+                categories: Self.categories(
+                    categoriesPlist: categoriesPlist,
+                    symbols: sortedSymbols,
+                    symbolNameMap: symbolNameMap
+                )
             )
         } catch {
             Self.logger.error("Could not load SF Symbols: \(error, privacy: .public)")
@@ -31,13 +49,6 @@ public struct SFSymbols: Sendable {
         }
     }
 
-    private init(symbols: [SFSymbol], categories: [SFSymbolCategory]) {
-        self.symbols = symbols
-        self.categories = categories
-    }
-}
-
-private extension SFSymbols {
     private static func symbols(
         using reader: CoreGlyphsPlistReader,
         categoriesPlist: CategoriesPlist
