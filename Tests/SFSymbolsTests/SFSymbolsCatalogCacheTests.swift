@@ -65,6 +65,29 @@ final class SFSymbolsCatalogCacheTests: XCTestCase {
         let callCount = await loader.numberOfCalls()
         XCTAssertEqual(callCount, 1)
     }
+
+    func testSuccessfulWriteRemovesStaleCatalogCacheFiles() async throws {
+        let directory = try temporaryCacheDirectory()
+        let unrelatedFileURL = directory.appendingPathComponent("metadata.json")
+        try Data().write(to: unrelatedFileURL)
+
+        let firstCache = SFSymbolsCatalogCache(directory: directory, osVersion: "macOS-26.0.0")
+        _ = try await firstCache.symbols {
+            Self.symbols(prefix: "stale")
+        }
+
+        let secondCache = SFSymbolsCatalogCache(directory: directory, osVersion: "macOS-26.1.0")
+        _ = try await secondCache.symbols {
+            Self.symbols(prefix: "current")
+        }
+
+        let fileNames = try FileManager.default.contentsOfDirectory(atPath: directory.path())
+        XCTAssertEqual(
+            fileNames.filter { $0.hasPrefix("symbols-") && $0.hasSuffix(".plist") },
+            ["symbols-macOS-26.1.0-v1.plist"]
+        )
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unrelatedFileURL.path()))
+    }
 }
 
 private extension SFSymbolsCatalogCacheTests {
