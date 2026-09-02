@@ -12,11 +12,11 @@ enum SymbolBackgroundSetting: Identifiable, Hashable, CaseIterable {
     var title: LocalizedStringResource {
         switch self {
         case .default:
-            "Default"
+            LocalizedStringResource("Default", bundle: .atURL(Bundle.module.bundleURL))
         case .light:
-            "Light"
+            LocalizedStringResource("Light", bundle: .atURL(Bundle.module.bundleURL))
         case .dark:
-            "Dark"
+            LocalizedStringResource("Dark", bundle: .atURL(Bundle.module.bundleURL))
         }
     }
 }

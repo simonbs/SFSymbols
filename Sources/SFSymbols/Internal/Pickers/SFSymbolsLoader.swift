@@ -9,11 +9,15 @@ struct SFSymbolsLoader<Content: View>: View {
     var body: some View {
         Group {
             if let loadError {
-                ContentUnavailableView(
-                    "Could not load symbols",
-                    systemImage: "exclamationmark.triangle.fill",
-                    description: Text(loadError.localizedDescription)
-                )
+                ContentUnavailableView {
+                    Label {
+                        Text("Could not load symbols", bundle: .module)
+                    } icon: {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                    }
+                } description: {
+                    Text(loadError.localizedDescription)
+                }
             } else {
                 ZStack {
                     content(symbols ?? .placeholder)
@@ -32,7 +36,7 @@ struct SFSymbolsLoader<Content: View>: View {
                                     #endif
                             }
                         } description: {
-                            Text("Loading...")
+                            Text("Loading…", bundle: .module)
                                 .padding(.top)
                         }
                     }

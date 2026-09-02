@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SFSymbols",
+    defaultLocalization: "en",
     platforms: [
         .macOS(.v14),
         .tvOS(.v17),
@@ -20,7 +21,10 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "SFSymbols"
+            name: "SFSymbols",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "SFSymbolsTests",

@@ -55,7 +55,7 @@ public struct SFSymbolPicker: View {
                         }
                         .font(.system(size: 18))
                     } else {
-                        Text("Select...")
+                        Text("Select…", bundle: .module)
                     }
                 }
                 .foregroundStyle(Color.accentColor)

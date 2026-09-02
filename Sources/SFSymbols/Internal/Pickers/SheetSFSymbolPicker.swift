@@ -34,8 +34,8 @@ struct SheetSFSymbolPicker: View {
                 .environment(\.symbolBackgroundSetting, symbolBackgroundSetting)
             }
             .background(BackgroundView())
-            .navigationTitle("Symbols")
-            .searchable(text: $searchText, prompt: Text("Search Symbols"))
+            .navigationTitle(Text("Symbols", bundle: .module))
+            .searchable(text: $searchText, prompt: Text("Search Symbols", bundle: .module))
             .foregroundStyle(Color.primary)
             #if canImport(UIKit)
                 .navigationBarTitleDisplayMode(.inline)
@@ -52,8 +52,12 @@ struct SheetSFSymbolPicker: View {
                             Button {
                                 dismiss()
                             } label: {
-                                Label("Close", systemImage: "xmark")
-                                    .labelStyle(.iconOnly)
+                                Label {
+                                    Text("Close", bundle: .module)
+                                } icon: {
+                                    Image(systemName: "xmark")
+                                }
+                                .labelStyle(.iconOnly)
                             }
                         }
                     }

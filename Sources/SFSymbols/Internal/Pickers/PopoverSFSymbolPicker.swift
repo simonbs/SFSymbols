@@ -56,8 +56,10 @@ private struct SearchField: View {
         HStack(spacing: 4) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.placeholder)
-            TextField("Search Symbols", text: $searchText, prompt: Text("Search Symbols"))
-                .textFieldStyle(.plain)
+            TextField(text: $searchText, prompt: Text("Search Symbols", bundle: .module)) {
+                Text("Search Symbols", bundle: .module)
+            }
+            .textFieldStyle(.plain)
             if !searchText.isEmpty {
                 Button {
                     searchText = ""

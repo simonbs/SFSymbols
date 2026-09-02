@@ -84,11 +84,15 @@ public struct SFSymbolPickerGrid: View {
     public var body: some View {
         ZStack {
             if showSearchResults && currentSymbols.isEmpty {
-                ContentUnavailableView(
-                    "No Symbols",
-                    systemImage: "magnifyingglass",
-                    description: Text("No results found for ”\(searchText)”")
-                )
+                ContentUnavailableView {
+                    Label {
+                        Text("No Symbols", bundle: .module)
+                    } icon: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                } description: {
+                    Text("No results found for “\(searchText)”", bundle: .module)
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollViewReader { proxy in
