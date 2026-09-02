@@ -36,6 +36,10 @@ private struct SymbolPickerPreviewUsesVariableValueEnvironmentKey: EnvironmentKe
     static let defaultValue = false
 }
 
+private struct SymbolPickerShowsSettingsEnvironmentKey: EnvironmentKey {
+    static let defaultValue = true
+}
+
 extension EnvironmentValues {
     var symbolPickerRenderingMode: SymbolRenderingMode {
         get { self[SymbolPickerRenderingModeEnvironmentKey.self] }
@@ -75,5 +79,10 @@ extension EnvironmentValues {
     var symbolPickerPreviewUsesVariableValue: Bool {
         get { self[SymbolPickerPreviewUsesVariableValueEnvironmentKey.self] }
         set { self[SymbolPickerPreviewUsesVariableValueEnvironmentKey.self] = newValue }
+    }
+
+    var symbolPickerShowsSettings: Bool {
+        get { self[SymbolPickerShowsSettingsEnvironmentKey.self] }
+        set { self[SymbolPickerShowsSettingsEnvironmentKey.self] = newValue }
     }
 }

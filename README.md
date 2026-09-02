@@ -173,6 +173,8 @@ Available settings:
   settings are applied to the preview inside `SFSymbolPicker`. Default is `false`.
 - `.sfSymbolPickerPreviewUsesVariableValue(_:)` defines whether the same variable value
   settings are applied to the preview inside `SFSymbolPicker`. Default is `false`.
+- `.sfSymbolPickerShowsSettings(_:)` defines whether the picker shows the settings menu
+  for choosing the preview background. Default is `true`.
 
 ### Load and Browse Symbols With SFSymbols
 

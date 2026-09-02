@@ -3,6 +3,7 @@ import SwiftUI
 struct PopoverSFSymbolPicker: View {
     @Binding var selection: String?
 
+    @Environment(\.symbolPickerShowsSettings) private var showsSettings
     @State private var searchText = ""
     @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbolBackgroundSetting: SymbolBackgroundSetting = .default
@@ -16,7 +17,9 @@ struct PopoverSFSymbolPicker: View {
                 HStack(spacing: 10) {
                     SearchField(searchText: $searchText)
                     #if !os(visionOS)
-                    SettingsMenu(symbolBackgroundSetting: $symbolBackgroundSetting)
+                    if showsSettings {
+                        SettingsMenu(symbolBackgroundSetting: $symbolBackgroundSetting)
+                    }
                     #endif
                 }
                 .padding([.horizontal, .top], 12)
@@ -56,8 +59,10 @@ private struct SearchField: View {
         HStack(spacing: 4) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.placeholder)
-            TextField("Search Symbols", text: $searchText, prompt: Text("Search Symbols"))
-                .textFieldStyle(.plain)
+            TextField(text: $searchText, prompt: Text("Search Symbols", bundle: .module)) {
+                Text("Search Symbols", bundle: .module)
+            }
+            .textFieldStyle(.plain)
             if !searchText.isEmpty {
                 Button {
                     searchText = ""

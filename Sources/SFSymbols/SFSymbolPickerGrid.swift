@@ -44,6 +44,7 @@ public struct SFSymbolPickerGrid: View {
     private let configuration: Configuration
     @State private var currentSymbols: [SFSymbol] = []
     @State private var searchTask: Task<Void, Never>?
+    @State private var didPerformInitialScroll = false
     private var showSearchResults: Bool {
         SFSymbols.hasSearchableText(searchText)
     }
@@ -83,11 +84,15 @@ public struct SFSymbolPickerGrid: View {
     public var body: some View {
         ZStack {
             if showSearchResults && currentSymbols.isEmpty {
-                ContentUnavailableView(
-                    "No Symbols",
-                    systemImage: "magnifyingglass",
-                    description: Text("No results found for ”\(searchText)”")
-                )
+                ContentUnavailableView {
+                    Label {
+                        Text("No Symbols", bundle: .module)
+                    } icon: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                } description: {
+                    Text("No results found for “\(searchText)”", bundle: .module)
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollViewReader { proxy in
@@ -108,8 +113,8 @@ public struct SFSymbolPickerGrid: View {
                     #if os(iOS)
                     .modifier(TopContentMarginForIOS27(margin: configuration.edgePadding))
                     #endif
-                    .onChange(of: currentSymbols) { _, _ in
-                        proxy.scrollTo("top", anchor: .top)
+                    .onChange(of: currentSymbols) { _, newSymbols in
+                        scroll(proxy, after: newSymbols)
                     }
                 }
             }
@@ -150,6 +155,19 @@ private struct TopContentMarginForIOS27: ViewModifier {
 #endif
 
 private extension SFSymbolPickerGrid {
+    /// Reveals the current selection the first time results are populated so that a preselected
+    /// symbol is visible without searching. Later updates scroll to the top as before.
+    private func scroll(_ proxy: ScrollViewProxy, after newSymbols: [SFSymbol]) {
+        if !didPerformInitialScroll && !newSymbols.isEmpty {
+            didPerformInitialScroll = true
+            if let selection, newSymbols.contains(where: { $0.name == selection }) {
+                proxy.scrollTo(selection, anchor: .center)
+                return
+            }
+        }
+        proxy.scrollTo("top", anchor: .top)
+    }
+
     private func updateCurrentResults(oldSearchText: String = "") {
         searchTask?.cancel()
         let symbolsToFilter = if SFSymbols.canRefineSearchResults(from: oldSearchText, to: searchText) {

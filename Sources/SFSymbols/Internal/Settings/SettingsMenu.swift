@@ -10,12 +10,16 @@ struct SettingsMenu: View {
                     Text(setting.title)
                 }
             } label: {
-                Text("Background")
+                Text("Background", bundle: .module)
             }
             .pickerStyle(.inline)
         } label: {
-            Label("Settings", systemImage: "ellipsis")
-                .labelStyle(.iconOnly)
+            Label {
+                Text("Settings", bundle: .module)
+            } icon: {
+                Image(systemName: "ellipsis")
+            }
+            .labelStyle(.iconOnly)
         }
     }
 }
