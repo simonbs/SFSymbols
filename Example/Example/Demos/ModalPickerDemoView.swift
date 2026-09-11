@@ -12,6 +12,7 @@ struct ModalPickerDemoView: View {
     @State private var variableValue: Double = 100
     @State private var previewUsesRenderingMode = false
     @State private var previewUsesVariableValue = false
+    @State private var showsSettingsMenu = true
 
     var body: some View {
         Form {
@@ -27,6 +28,7 @@ struct ModalPickerDemoView: View {
                     .backportedSFSymbolPickerVariableValueMode(variableValueMode)
                     .sfSymbolPickerPreviewUsesRenderingMode(previewUsesRenderingMode)
                     .sfSymbolPickerPreviewUsesVariableValue(previewUsesVariableValue)
+                    .sfSymbolPickerShowsSettingsMenu(showsSettingsMenu)
             }
             #if os(macOS)
             Divider()
@@ -104,6 +106,7 @@ struct ModalPickerDemoView: View {
             Section {
                 Toggle("Preview Uses Rendering Mode", isOn: $previewUsesRenderingMode)
                 Toggle("Preview Uses Variable Value", isOn: $previewUsesVariableValue)
+                Toggle("Shows Settings Menu", isOn: $showsSettingsMenu)
             }
         }
         .navigationTitle("Modal Picker")

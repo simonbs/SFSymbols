@@ -4,6 +4,7 @@ struct SheetSFSymbolPicker: View {
     @Binding var selection: String?
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.symbolPickerShowsSettingsMenu) private var showsSettingsMenu
     @State private var searchText = ""
     @State private var categoryFilter: SFSymbolCategoryFilter = .all
     @State private var symbolBackgroundSetting: SymbolBackgroundSetting = .default
@@ -40,8 +41,10 @@ struct SheetSFSymbolPicker: View {
             #if canImport(UIKit)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        SettingsMenu(symbolBackgroundSetting: $symbolBackgroundSetting)
+                    if showsSettingsMenu {
+                        ToolbarItem(placement: .topBarLeading) {
+                            SettingsMenu(symbolBackgroundSetting: $symbolBackgroundSetting)
+                        }
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         if #available(iOS 26, visionOS 26, *) {
